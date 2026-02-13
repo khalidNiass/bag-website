@@ -462,6 +462,128 @@ nav a.active {
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
+#checkoutModal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+#checkoutModal.active { display: flex; }
+.checkout-content {
+   background: #1a1a1a; padding: 30px; 
+   width: 90%; max-width: 450px; 
+   border-radius: 15px; 
+  }
+
+  /* ========================= */
+/* IMPROVED CHECKOUT MODAL   */
+/* ========================= */
+
+#checkoutModal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Slightly darker overlay */
+    justify-content: center;
+    align-items: center;
+    -webkit-backdrop-filter: blur(5px); /* Adds a modern blur effect */
+    color: #fff;
+    backdrop-filter: blur(5px); /* Adds a modern blur effect */
+}
+
+#checkoutModal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.checkout-content {
+    background: #1a1a1a;
+    width: 90%;
+    max-width: 450px;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    color: #fff;
+}
+
+#checkoutForm input, 
+#checkoutForm textarea {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#checkoutForm input:focus, 
+#checkoutForm textarea:focus {
+    border-color: #f39c12; /* Matches your brand orange */
+}
+
+#checkoutForm textarea {
+    height: 100px;
+    resize: none;
+}
+
+#summaryText {
+    background: #f39c12;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #f39c12;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #fff;
+}
+
+#payNowBtn {
+    width: 100%;
+    padding: 16px;
+    background: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+#payNowBtn:hover {
+    background: #e67e22;
+    transform: translateY(-2px);
+}
+
+#payNowBtn:active {
+    transform: translateY(0);
+}
+
+.close-checkout {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-checkout:hover {
+    color: #f39c12 !important;
+}
+
 /* Fade In Animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px);}

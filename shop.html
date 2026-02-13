@@ -94,16 +94,16 @@
     <div class="footer-social">
       <h3>Follow Us</h3>
       <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-facebook-f">f</i>
       </a>
       <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i>
+        <i class="fab fa-instagram">i</i>
       </a>
       <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-twitter"></i>
+        <i class="fab fa-twitter">x</i>
       </a>
       <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp"></i>
+        <i class="fab fa-whatsapp">w</i>
       </a>
     </div>
   </footer>
@@ -125,10 +125,10 @@
         <p id="modalPrice"></p>
         <p id="modalDesc"></p>
 
-        <label>Color</label>
+        <label for="modalColor">Color</label>
         <select id="modalColor"></select>
 
-        <label>Quantity</label>
+        <label for="modalQty">Quantity</label>
         <input type="number" id="modalQty" value="1" min="1">
 
         <button id="modalOrderBtn">Proceed to Payment</button>
@@ -136,14 +136,14 @@
     </div>
   </div>
 <div id="checkoutModal"> <div class="checkout-content"> <span class="close-checkout">&times;</span>
-        <h2>Delivery Details</h2>
+        <h2 style="text-align: center; font-weight: bold; margin: 10px 0; color: #ffffff;">Delivery Details</h2>
         <form id="checkoutForm">
             <input type="text" id="custName" placeholder="Full Name" required>
             <input type="email" id="custEmail" placeholder="Email Address" required>
             <input type="tel" id="custPhone" placeholder="Phone Number" required>
             <textarea id="custAddress" placeholder="Home Address" required></textarea>
             
-            <p id="summaryText" style="text-align: center; font-weight: bold; margin: 10px 0; color: #333;"></p>
+            <p id="summaryText" style="text-align: center; font-weight: bold; margin: 10px 0; color: #ffffff;"></p>
             <button type="submit" id="payNowBtn">Pay Now</button>
         </form>
     </div>

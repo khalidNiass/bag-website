@@ -1,558 +1,850 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HotshionHub Admin</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop | HotshionHub</title>
+  <link rel="stylesheet" href="shop.css">
   <link rel="stylesheet" href="style.css">
-
-  <!-- Redirect if admin not logged in -->
-  <!-- <script>
-    if (localStorage.getItem("adminLoggedIn") !== "true") {
-      window.location.href = "admin-login.html";
-    }
-  </script> -->
-
-  <style>
-    /* ================= BODY ================= */
-    body {
-      background: #ffffff;
-      font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      color: #1a1919;
-    }
-
-    /* ================= HEADER ================= */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f39c12;
-      color: #fff;
-      padding: 20px;
-      font-size: 28px;
-      letter-spacing: 2px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .logout {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .logout:hover {
-      background: #c0392b;
-    }
-
-    /* ================= SECTIONS ================= */
-    .section {
-      padding: 50px 20px;
-    }
-
-    .section h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 32px;
-    }
-
-    /* ================= FORM ================= */
-    form {
-      background: #fff;
-      max-width: 700px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    form input,
-    form select,
-    form textarea,
-    form button {
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    button {
-      background: #f39c12;
-      color: #fff;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #e67e22;
-    }
-
-    /* ================= COLORS ================= */
-    #colorsContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    #colorsContainer label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #eee;
-      padding: 6px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    #colorsContainer input {
-      accent-color: #f39c12;
-    }
-
-    /* ================= EXISTING PRODUCTS ================= */
-    #existingProducts {
-      max-width: 900px;
-      margin: 40px auto;
-    }
-
-    .product-admin {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 15px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    }
-
-    .product-admin img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .product-admin .info {
-      flex: 1;
-    }
-
-    .color-tag {
-      display: inline-block;
-      background: #eee;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin: 4px 5px 0 0;
-    }
-
-    .badge-admin {
-      background: #f39c12;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-left: 6px;
-    }
-
-    .delete-btn {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .delete-btn:hover {
-      background: #c0392b;
-    }
-    .edit-btn{
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .edit-btn:hover {
-      background: #c0392b;
-    }
-    /* ================= MESSAGE ================= */
-    #message {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  font-size: 16px;
-  z-index: 9999;
-  display: none; /* hidden by default */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-#message.success { background-color: #27ae60; }
-#message.error { background-color: #e74c3c; }
-#message.info { background-color: #f39c12; }
-
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
 
-<header>
-  <span>Admin Page</span>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+  <!-- ========================= -->
+  <!-- MOBILE MENU BUTTON -->
+  <!-- ========================= -->
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
-<section class="section">
-  <h2>Add Product</h2>
+  <!-- ========================= -->
+  <!-- MOBILE SIDEBAR -->
+  <!-- ========================= -->
+  <div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()">✕</button>
+    <ul>
+      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
+      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
+      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
+    </ul>
+  </div>
 
-  <!-- MESSAGE CONTAINER -->
-  <div id="message"></div>
+  <!-- ========================= -->
+  <!-- HEADER -->
+  <!-- ========================= -->
+  <header>
+    <h1>HotshionHub</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
-  <form id="productForm">
-    <input type="text" id="name" placeholder="Product Name" required>
-    <input type="number" id="price" placeholder="Price" required>
-    <textarea id="description" placeholder="Product Description" required></textarea>
+  <!-- ========================= -->
+  <!-- SHOP SECTION -->
+  <!-- ========================= -->
+  <section class="section">
 
-    <label for="images">Product Images (multiple)</label>
-    <input type="file" id="images" multiple accept="image/*">
+    <!-- Search Bar -->
+    <input
+      type="text"
+      id="shopSearch"
+      placeholder="Search products..."
+      style="width:100%; padding:12px; margin-bottom:20px;"
+    >
 
-    <label>Available Colors</label>
-    <div id="colorsContainer">
-      <label><input type="checkbox" value="Black"> Black</label>
-      <label><input type="checkbox" value="Brown"> Brown</label>
-      <label><input type="checkbox" value="Beige"> Beige</label>
-      <label><input type="checkbox" value="White"> White</label>
-      <label><input type="checkbox" value="Red"> Red</label>
+    <h2>Our Collection</h2>
+
+    <!-- Category Filters -->
+    <div class="category-filter">
+      <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="bags">Bags</button>
+      <button class="filter-btn" data-category="shoes">Shoes</button>
+      <button class="filter-btn" data-category="watches">Watches</button>
+      <button class="filter-btn" data-category="clothes">Clothes</button>
+      <button class="filter-btn" data-category="accessories">Accessories</button>
+
+      <!-- Gender Dropdown -->
+      <div class="gender-filter">
+        <button class="filter-btn gender-btn" id="genderBtn">Gender ▾</button>
+        <div class="gender-menu">
+          <label><input type="checkbox" value="men"> Men</label>
+          <label><input type="checkbox" value="women"> Women</label>
+        </div>
+      </div>
+
+      <!-- Badge Dropdown -->
+      <div class="badge-dropdown">
+        <button id="badgeBtn">Badge ▾</button>
+        <div class="badge-menu">
+          <label><input type="checkbox" value="NEW"> NEW</label>
+          <label><input type="checkbox" value="HOT"> HOT</label>
+        </div>
+      </div>
     </div>
 
-    <label for="category">Category</label>
-    <select id="category" required>
-      <option value="bags">Bags</option>
-      <option value="shoes">Shoes</option>
-      <option value="watches">Watches</option>
-      <option value="clothes">Clothes</option>
-      <option value="accessories">Accessories</option>
-    </select>
+    <!-- Products Grid (JS will inject products here) -->
+    <div class="products"></div>
+  </section>
 
-    <label for="gender">Gender</label>
-    <select id="gender" required>
-      <option value="men">Men</option>
-      <option value="women">Women</option>
-      <option value="unisex">Unisex</option>
-    </select>
+  <!-- ========================= -->
+  <!-- FOOTER -->
+  <!-- ========================= -->
+  <footer>
+    <p>© 2026 HotshionHub. All Rights Reserved.</p>
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+  </footer>
 
-    <label for="badge">Badge</label>
-    <select id="badge">
-      <option value="">None</option>
-      <option value="NEW">NEW</option>
-      <option value="HOT">HOT</option>
-    </select>
+  <!-- ========================= -->
+  <!-- PRODUCT MODAL -->
+  <!-- ========================= -->
+  <div class="product-modal" id="productModal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
 
-    <button type="submit">Add Product</button>
-  </form>
-</section>
+      <div class="modal-left">
+        <img id="mainImage" src="" alt="">
+        <div class="thumbnails" id="thumbnails"></div>
+      </div>
 
-<section class="section">
-  <h2>Existing Products</h2>
-  <div id="existingProducts"></div>
-</section>
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p id="modalPrice"></p>
+        <p id="modalDesc"></p>
 
-<!-- ADMIN JS -->
-<script src="admin.js"></script>
+        <label>Color</label>
+        <select id="modalColor"></select>
 
+        <label>Quantity</label>
+        <input type="number" id="modalQty" value="1" min="1">
+
+        <button id="modalOrderBtn">Proceed to Payment</button>
+      </div>
+    </div>
+  </div>
+<div id="checkoutModal"> <div class="checkout-content"> <span class="close-checkout">&times;</span>
+        <h2 style="text-align: center; font-weight: bold; margin: 10px 0; color: #ffffff;">Delivery Details</h2>
+        <form id="checkoutForm">
+            <input type="text" id="custName" placeholder="Full Name" required>
+            <input type="email" id="custEmail" placeholder="Email Address" required>
+            <input type="tel" id="custPhone" placeholder="Phone Number" required>
+            <textarea id="custAddress" placeholder="Home Address" required></textarea>
+            
+            <p id="summaryText" style="text-align: center; font-weight: bold; margin: 10px 0; color: #ffffff;"></p>
+            <button type="submit" id="payNowBtn">Pay Now</button>
+        </form>
+    </div>
+</div>
+  <!-- ========================= -->
+  <!-- SCRIPTS -->
+  <!-- ========================= -->
+  <script src="shop.js"></script>
 </body>
 </html>
 
 
 
-
-
-// ===============================
-// ADMIN AUTH
-// ===============================
-function logout() {
-  localStorage.removeItem("adminLoggedIn");
-  window.location.href = "admin-login.html";
+#shopSearch {
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-// ===============================
-// DOM ELEMENTS
-// ===============================
-const form = document.getElementById("productForm");
-const existingProductsEl = document.getElementById("existingProducts");
-const imageInput = document.getElementById("images");
-
-// Temporary message container
-const messageEl = document.createElement("div");
-messageEl.id = "message";
-messageEl.style.textAlign = "center";
-messageEl.style.margin = "15px 0";
-form.parentNode.insertBefore(messageEl, form);
-
-// ===============================
-// BACKEND CONFIG
-// ===============================
-const API_URL = "http://localhost:3000/api/products"; 
-
-// ===============================
-// STATE
-// ===============================
-let products = [];
-let editingProductId = null;
-
-// ===============================
-// UTILS
-// ===============================
-function showMessage(msg, type = "info") {
-  messageEl.textContent = msg;
-  messageEl.className = type;
-  messageEl.style.display = "block";
-  messageEl.style.opacity = "1";
-  setTimeout(() => {
-    messageEl.style.opacity = "0";
-    setTimeout(() => messageEl.style.display = "none", 300);
-  }, 3000);
+.product {
+  padding: 10px;
+  text-align: center;
 }
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = err => reject(err);
-    reader.readAsDataURL(file);
-  });
+
+
+/* ========================= */
+/* SHOP PAGE STYLING */
+/* ========================= */
+
+/* Section Title */
+.section h2 {
+  font-size: 42px;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #111;
+  position: relative;
+  font-weight: 700;
 }
 
-// ===============================
-// SYNC FROM GOOGLE SHEET
-// ===============================
-async function syncFromGoogleSheet() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
+.section h2::after {
+  content: '';
+  width: 90px;
+  height: 4px;
+  background: #f39c12;
+  display: block;
+  margin: 20px auto 0;
+  border-radius: 5px;
+}
 
-    // Ensure data is mapped correctly from Sheet rows
-    products = data.map(p => ({
-      id: p.id,
-      name: p.name,
-      price: Number(p.price),
-      description: p.description || "",
-      images: Array.isArray(p.images) ? p.images : (p.images ? p.images.split("|") : []),
-      colors: Array.isArray(p.colors) ? p.colors : (p.colors ? p.colors.split(",") : []),
-      category: p.category,
-      gender: p.gender,
-      badge: p.badge || ""
-    }));
+/* ========================= */
+/* Category Filter Buttons   */
+/* ========================= */
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 50px;
+  gap: 12px;
+}
 
-    renderProducts();
-  } catch (err) {
-    console.error("SYNC ERROR:", err);
-    showMessage("❌ Failed to sync products", "error");
+.category-filter .filter-btn {
+  background: #fff;
+  color: #f39c12;
+  border: 2px solid #f39c12;
+  padding: 12px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  outline: none;
+  min-width: 120px;
+  text-align: center;
+}
+
+.category-filter .filter-btn:hover {
+  background: #f39c12;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.category-filter .filter-btn.active {
+  background: #f39c12;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+/* Gender Dropdown */
+.gender-dropdown {
+  position: relative;
+}
+
+.gender-menu {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  background: #fff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 100;
+  min-width: 180px;
+}
+
+.gender-menu label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.gender-menu label:last-child {
+  margin-bottom: 0;
+}
+
+.gender-menu input {
+  accent-color: #f39c12;
+  cursor: pointer;
+}
+
+.gender-menu.show {
+  display: block;
+}
+
+/* ========================= */
+/* Gender Dropdown Styling   */
+/* ========================= */
+.gender-filter {
+  position: relative;
+}
+
+.gender-btn {
+  background: #fff;
+  color: #f39c12;
+  border: 2px solid #f39c12;
+  padding: 12px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-width: 120px;
+  text-align: center;
+}
+
+.gender-btn:hover {
+  background: #f39c12;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.gender-menu {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  background: #fff;
+  border-radius: 30px;
+  padding: 15px 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none; /* hidden by default */
+  z-index: 100;
+  min-width: 180px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.gender-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gender-menu label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.gender-menu label:hover {
+  color: #f39c12;
+}
+
+.gender-menu input {
+  accent-color: #f39c12;
+  cursor: pointer;
+}
+
+.badge-menu {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  background: #fff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 100;
+  min-width: 180px;
+}
+
+.badge-menu label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.badge-menu input {
+  accent-color: #f39c12;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* BADGE DROPDOWN STYLING    */
+/* ========================= */
+.badge-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-menu {
+  position: absolute;
+  top: 50px; /* adjust to align with button */
+  left: 0;
+  background: #fff;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 100;
+  min-width: 180px;
+}
+
+.badge-menu label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.badge-menu label:last-child {
+  margin-bottom: 0;
+}
+
+.badge-menu input {
+  accent-color: #f39c12;
+  cursor: pointer;
+}
+
+/* BUTTON STYLING */
+#badgeBtn {
+  background: #fff;
+  color: #f39c12;
+  border: 2px solid #f39c12;
+  padding: 12px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  outline: none;
+  min-width: 120px;
+  text-align: center;
+}
+
+#badgeBtn:hover {
+  background: #f39c12;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+/* Show menu */
+.badge-menu.show {
+  display: block !important;
+}
+
+
+/* ========================= */
+/* Products Grid */
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  padding: 0 10px;
+}
+
+/* ========================= */
+/* Product Card */
+.product {
+  position: relative;
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Product Image */
+.product img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: transform 0.4s ease, filter 0.3s;
+}
+
+.product:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+/* Product Text */
+.product h3 {
+  margin: 15px 0 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  min-height: 48px; /* Keep title heights consistent */
+}
+
+.product p {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f39c12;
+  margin-bottom: 10px;
+}
+
+/* ========================= */
+/* Buttons */
+.product button {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background: #f39c12;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.product button:hover {
+  background: #e67e22;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* View Product Button (Modal) */
+.product .view-btn {
+  margin-top: 10px;
+  padding: 12px 20px;
+  background: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+.product .view-btn:hover {
+  background: #34495e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Badge */
+.product .badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #f39c12;
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ========================= */
+/* Footer Socials */
+.footer-social {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.footer-social a {
+  margin: 0 12px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.footer-social a:hover {
+  color: #e67e22;
+  transform: scale(1.1);
+}
+
+/* ========================= */
+/* PRODUCT MODAL STYLING     */
+/* ========================= */
+
+/* Modal Overlay */
+.product-modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 50px 20px;
+}
+
+/* Modal Content */
+.product-modal .modal-content {
+  background: #fff;
+  max-width: 1000px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.product-modal .close {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 1010;
+}
+
+.product-modal .close:hover {
+  color: #f39c12;
+}
+
+/* Modal Left - Images */
+.modal-left {
+  flex: 1 1 50%;
+  background: #f9f9f9;
+  padding: 25px;
+  text-align: center;
+}
+
+.modal-left img#mainImage {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.modal-left img#mainImage:hover {
+  transform: scale(1.03);
+}
+
+/* Thumbnails */
+.thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.thumbnails img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.thumbnails img:hover,
+.thumbnails img.active {
+  border-color: #f39c12;
+  transform: scale(1.1);
+}
+
+/* Modal Right - Product Info */
+.modal-right {
+  flex: 1 1 50%;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.modal-right h3 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.modal-right p {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.modal-right label {
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: block;
+  color: #ffffff;
+}
+
+.modal-right select,
+.modal-right input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+#modalOrderBtn {
+  padding: 15px;
+  background: #f39c12;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background 0.3s, transform 0.2s;
+}
+
+#modalOrderBtn:hover {
+  background: #e67e22;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.checkout-content {
+    max-width: 450px;
+    padding: 30px;
+}
+#checkoutForm input, #checkoutForm textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+}
+#checkoutForm textarea { height: 80px; resize: none; }
+#payNowBtn {
+    width: 100%;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+#payNowBtn:hover { background: #333; }
+
+/* Ensure the checkout modal is hidden by default */
+#checkoutModal {
+    display: none; /* This hides it */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(24, 23, 23, 0.7); /* Dark background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Make sure it shows up when we trigger it in JS */
+#checkoutModal.active {
+    display: flex;
+}
+
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive */
+@media(max-width: 992px){
+  .product-modal .modal-content {
+    flex-direction: column;
+  }
+
+  .modal-left, .modal-right {
+    flex: 1 1 100%;
+  }
+
+  .modal-left img#mainImage {
+    max-height: 400px;
   }
 }
 
-// ===============================
-// ADD / EDIT PRODUCT
-// ===============================
-form.addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const price = Number(document.getElementById("price").value);
-  const description = document.getElementById("description").value.trim();
-  const category = document.getElementById("category").value;
-  const gender = document.getElementById("gender").value;
-  const badge = document.getElementById("badge").value;
-  const colors = [...document.querySelectorAll("#colorsContainer input:checked")].map(cb => cb.value);
-
-  if (!name || isNaN(price) || price <= 0) {
-    showMessage("❌ Please enter a valid name and price", "error");
-    return;
+@media(max-width: 480px){
+  .modal-left img#mainImage {
+    max-height: 300px;
   }
 
-  let images = [];
-  try {
-    // If editing and no new images selected, keep old ones. Else, convert new files.
-    if (editingProductId && imageInput.files.length === 0) {
-      images = products.find(p => p.id === editingProductId).images;
-    } else {
-      images = await Promise.all([...imageInput.files].map(fileToBase64));
-    }
-  } catch (err) {
-    showMessage("❌ Error reading image file", "error");
-    return;
+  .thumbnails img {
+    width: 50px;
+    height: 50px;
   }
 
-  const productData = {
-    id: editingProductId || Date.now().toString(), // Ensure ID is a string for comparison
-    name,
-    price,
-    description,
-    images,
-    colors,
-    category,
-    gender,
-    badge
-  };
-
-  // Set the action for the Google Script logic
-  const payload = editingProductId 
-    ? { ...productData, action: "edit" } 
-    : { ...productData, action: "add" };
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const result = await res.json(); // Node server sends JSON {success, message}
-    console.log("SERVER RESPONSE:", result);
-
-    if (result.message === "SUCCESS" || result.message === "UPDATED") {
-      if (editingProductId) {
-        products = products.map(p => p.id === editingProductId ? productData : p);
-        showMessage("✏️ Product updated successfully!", "success");
-        editingProductId = null;
-      } else {
-        products.push(productData);
-        showMessage("✅ Product added successfully!", "success");
-      }
-
-      form.reset();
-      imageInput.value = "";
-      renderProducts();
-    } else {
-      showMessage("❌ Error: " + result.message, "error");
-    }
-
-  } catch (err) {
-    console.error("POST ERROR:", err);
-    showMessage("❌ Failed to send product", "error");
+  .modal-right h3 {
+    font-size: 24px;
   }
-});
 
-// ===============================
-// DELETE PRODUCT
-// ===============================
-async function deleteProduct(id) {
-  if (!confirm("Delete this product?")) return;
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id, action: "delete" })
-    });
-
-    const result = await res.json();
-    console.log("DELETE RESPONSE:", result);
-
-    if (result.message === "DELETED") {
-      products = products.filter(p => p.id !== id);
-      renderProducts();
-      showMessage("🗑️ Product deleted", "success");
-    } else {
-      showMessage("❌ Could not delete: " + result.message, "error");
-    }
-  } catch (err) {
-    console.error("DELETE ERROR:", err);
-    showMessage("❌ Failed to delete product", "error");
+  #modalOrderBtn {
+    font-size: 16px;
+    padding: 12px;
   }
 }
 
-// ===============================
-// EDIT PRODUCT (Fill form)
-// ===============================
-function editProduct(product) {
-  editingProductId = product.id;
 
-  document.getElementById("name").value = product.name;
-  document.getElementById("price").value = product.price;
-  document.getElementById("description").value = product.description;
-  document.getElementById("category").value = product.category;
-  document.getElementById("gender").value = product.gender;
-  document.getElementById("badge").value = product.badge;
-
-  document.querySelectorAll("#colorsContainer input").forEach(cb => {
-    cb.checked = product.colors.includes(cb.value);
-  });
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showMessage("✏️ Editing product. Update fields and submit.", "info");
+/* ========================= */
+/* Responsive */
+@media(max-width: 992px){
+  .product img {
+    height: 250px;
+  }
 }
 
-// ===============================
-// RENDER PRODUCTS
-// ===============================
-function renderProducts() {
-  existingProductsEl.innerHTML = "";
-
-  if (!products.length) {
-    existingProductsEl.innerHTML = "<p style='text-align:center'>No products yet</p>";
-    return;
+@media(max-width: 768px){
+  .products {
+    gap: 25px;
   }
-
-  // Display newest first
-  [...products].reverse().forEach(product => {
-    const div = document.createElement("div");
-    div.className = "product-admin";
-
-    const imagesHTML = product.images.map(img => `
-      <img src="${img}" alt="${product.name}" class="product-thumb" onerror="this.src='https://via.placeholder.com/50'">
-    `).join("");
-
-    div.innerHTML = `
-      <div class="images-container">${imagesHTML}</div>
-      <div class="info">
-        <strong>${product.name}</strong>
-        ${product.badge ? `<span class="badge-admin">${product.badge}</span>` : ""}
-        <p>₦${product.price.toLocaleString()}</p>
-        <p>${product.category} • ${product.gender}</p>
-        <div class="color-tags">${product.colors.map(c => `<span class="color-tag">${c}</span>`).join("")}</div>
-      </div>
-      <div class="actions">
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </div>
-    `;
-
-    div.querySelector(".edit-btn").onclick = () => editProduct(product);
-    div.querySelector(".delete-btn").onclick = () => deleteProduct(product.id);
-
-    existingProductsEl.appendChild(div);
-  });
+  .category-filter {
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 
-// ===============================
-// IMAGE ALERT
-// ===============================
-imageInput.addEventListener("change", function () {
-  if (this.files.length > 0) {
-    showMessage(`📂 ${this.files.length} image(s) selected`, "success");
+@media(max-width: 480px){
+  .product img {
+    height: 220px;
   }
-});
+  .category-filter .filter-btn {
+    width: 90%;
+    padding: 12px 0;
+    font-size: 15px;
+  }
+  .product h3 {
+    font-size: 18px;
+  }
+  .product p {
+    font-size: 16px;
+  }
+  .product button, .product .view-btn {
+    font-size: 15px;
+    padding: 10px 15px;
+  }
+}
 
-// ===============================
-// INITIAL LOAD
-// ===============================
-syncFromGoogleSheet();

@@ -2,179 +2,176 @@ const sidebar = document.getElementById("mobileSidebar");
 const menuBtn = document.querySelector(".menu-btn");
 
 function toggleSidebar() {
-  sidebar.classList.add("active");
-  menuBtn.style.display = "none"; // hide hamburger
+    sidebar.classList.add("active");
+    menuBtn.style.display = "none";
 }
 
 function closeSidebar() {
-  sidebar.classList.remove("active");
-  menuBtn.style.display = "block"; // show hamburger
+    sidebar.classList.remove("active");
+    menuBtn.style.display = "block";
 }
 
 // =========================
-// NEWSLETTER SUBSCRIPTION
+// NEWSLETTER
 // =========================
 const newsletterForm = document.getElementById('newsletterForm');
-const newsletterInput = newsletterForm?.querySelector('input');
-const newsletterMessage = document.createElement('p'); // message element
-newsletterMessage.style.color = 'green';
-newsletterMessage.style.marginTop = '10px';
-newsletterForm?.appendChild(newsletterMessage);
+if (newsletterForm) {
+    const newsletterInput = newsletterForm.querySelector('input');
+    const newsletterMessage = document.createElement('p');
+    newsletterForm.appendChild(newsletterMessage);
 
-newsletterForm?.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const email = newsletterInput.value.trim();
-
-  if (!email) {
-    newsletterMessage.textContent = "Please enter a valid email.";
-    newsletterMessage.style.color = 'red';
-    return;
-  }
-
-  // Show immediate success message
-  newsletterMessage.textContent = `Thanks for subscribing with ${email}!`;
-  newsletterMessage.style.color = 'green';
-
-  // Optionally: send to Google Sheet
-  try {
-    await fetch("YOUR_GOOGLE_SHEET_WEB_APP_URL_FOR_SUBSCRIBERS", { // replace with your subscribers sheet URL
-      method: "POST",
-      body: JSON.stringify({ email }),
-      headers: { "Content-Type": "application/json" }
+    newsletterForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = newsletterInput.value.trim();
+        try {
+            await fetch("http://localhost:3000/api/subscribe", {
+                method: "POST",
+                body: JSON.stringify({ action: "subscribe", email }),
+                headers: { "Content-Type": "application/json" }
+            });
+            newsletterMessage.textContent = "Thanks for subscribing!";
+            newsletterMessage.style.color = 'green';
+            newsletterInput.value = '';
+        } catch (err) {
+            newsletterMessage.textContent = "Subscription failed.";
+            newsletterMessage.style.color = 'red';
+        }
     });
-  } catch (err) {
-    console.error("Subscription error:", err);
-    newsletterMessage.textContent = "Subscribed locally, but failed to save online.";
-    newsletterMessage.style.color = 'orange';
-  }
-
-  // Reset the form
-  newsletterInput.value = '';
-});
-
+}
 
 // =========================
-// FETCH PRODUCTS FROM GOOGLE SHEET
+// FETCH & RENDER
 // =========================
-const API_URL = "http://localhost:3000/api/products"; // replace with your sheet web app URL
+const API_URL = "http://localhost:3000/api/products";
 const featuredContainer = document.getElementById('featuredProducts');
 let products = [];
 
-// Modal elements
-const modal = document.getElementById('productModal');
-const closeBtn = document.querySelector('.close');
-const mainImage = document.getElementById('mainImage');
-const thumbnails = document.getElementById('thumbnails');
-const modalName = document.getElementById('modalName');
-const modalPrice = document.getElementById('modalPrice');
-const modalDesc = document.getElementById('modalDesc');
-const modalColor = document.getElementById('modalColor');
-const modalQty = document.getElementById('modalQty');
-const modalOrderBtn = document.getElementById('modalOrderBtn');
+// Separate Modals (Matching your Shop Page)
+const productModal = document.getElementById('productModal');
+const checkoutModal = document.getElementById('checkoutModal');
+const closeProduct = document.querySelector('.close');
+const closeCheckout = document.querySelector('.close-checkout');
 
-// =========================
-// FETCH PRODUCTS FUNCTION
-// =========================
 async function fetchProducts() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-
-    products = data.map(p => ({
-      id: p.id,
-      name: p.name,
-      price: Number(p.price),
-      description: p.description || "",
-      images: Array.isArray(p.images) ? p.images : [],
-      colors: Array.isArray(p.colors) ? p.colors : [],
-      category: p.category,
-      gender: p.gender,
-      badge: p.badge || ""
-    }));
-
-    renderFeaturedProducts();
-  } catch (err) {
-    console.error("FETCH ERROR:", err);
-    featuredContainer.innerHTML = "<p>Failed to load products</p>";
-  }
+    try {
+        const res = await fetch(API_URL);
+        products = await res.json();
+        renderFeaturedProducts();
+    } catch (err) {
+        if (featuredContainer) featuredContainer.innerHTML = "<p>Failed to load products</p>";
+    }
 }
 
-// =========================
-// RENDER FEATURED PRODUCTS
-// =========================
 function renderFeaturedProducts() {
-  featuredContainer.innerHTML = '';
+    if (!featuredContainer) return;
+    featuredContainer.innerHTML = '';
+    const featured = [...products].sort(() => 0.5 - Math.random()).slice(0, 4);
 
-  // Shuffle products and pick first 4
-  const shuffled = [...products].sort(() => 0.5 - Math.random());
-  const featured = shuffled.slice(0, 4);
-
-  featured.forEach(product => {
-    const badgeHTML = product.badge ? `<span class="badge">${product.badge}</span>` : '';
-    featuredContainer.innerHTML += `
-      <div class="product">
-        ${badgeHTML}
-        <img src="${product.images[0]}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p>₦${product.price.toLocaleString()}</p>
-        <button onclick="openModalById('${product.id}')">View Product</button>
-      </div>
-    `;
-  });
+    featured.forEach(product => {
+        const badgeHTML = product.badge ? `<span class="badge">${product.badge}</span>` : '';
+        featuredContainer.innerHTML += `
+            <div class="product">
+                ${badgeHTML}
+                <img src="${product.images[0]}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>₦${Number(product.price).toLocaleString()}</p>
+                <button onclick="openModalById('${product.id}')">View Product</button>
+            </div>`;
+    });
 }
 
 // =========================
-// OPEN MODAL BY PRODUCT ID
+// STEP 1: OPEN PRODUCT MODAL
 // =========================
 function openModalById(productId) {
-  const product = products.find(p => String(p.id) === String(productId));
-  if (!product) return alert('Product not found!');
+    const product = products.find(p => String(p.id) === String(productId));
+    if (!product) return;
 
-  modal.style.display = 'flex';
+    productModal.style.display = 'flex';
 
-  mainImage.src = product.images[0];
-  modalName.textContent = product.name;
-  modalPrice.textContent = `₦${product.price.toLocaleString()}`;
-  modalDesc.textContent = product.description;
+    document.getElementById('mainImage').src = product.images[0];
+    document.getElementById('modalName').textContent = product.name;
+    document.getElementById('modalPrice').textContent = `₦${Number(product.price).toLocaleString()}`;
+    document.getElementById('modalDesc').textContent = product.description;
 
-  // Colors
-  modalColor.innerHTML = '';
-  product.colors?.forEach(color => {
-    const option = document.createElement('option');
-    option.value = color;
-    option.textContent = color;
-    modalColor.appendChild(option);
-  });
+    const modalColor = document.getElementById('modalColor');
+    modalColor.innerHTML = '';
+    product.colors?.forEach(color => {
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = color;
+        modalColor.appendChild(opt);
+    });
 
-  // Thumbnails
-  thumbnails.innerHTML = '';
-  product.images.forEach(img => {
-    const thumb = document.createElement('img');
-    thumb.src = img;
-    thumb.onclick = () => mainImage.src = img;
-    thumbnails.appendChild(thumb);
-  });
-
-  // Order button
-  modalOrderBtn.onclick = () => {
-    const total = product.price * Number(modalQty.value);
-    const message = `
-Product: ${product.name}
-Color: ${modalColor.value}
-Quantity: ${modalQty.value}
-Price: ₦${total.toLocaleString()}
-`;
-    window.open(`https://wa.me/2347062161794?text=${encodeURIComponent(message)}`, '_blank');
-  };
+    const thumbContainer = document.getElementById('thumbnails');
+    thumbContainer.innerHTML = '';
+    product.images.forEach(img => {
+        const thumb = document.createElement('img');
+        thumb.src = img;
+        thumb.onclick = () => document.getElementById('mainImage').src = img;
+        thumbContainer.appendChild(thumb);
+    });
 }
 
 // =========================
-// CLOSE MODAL
+// STEP 2: SWITCH TO CHECKOUT MODAL
 // =========================
-closeBtn.onclick = () => modal.style.display = 'none';
-window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+// This matches your "modalOrderBtn" which says "Proceed to Payment"
+document.getElementById('modalOrderBtn').onclick = () => {
+    const name = document.getElementById('modalName').textContent;
+    const qty = document.getElementById('modalQty').value;
+    const color = document.getElementById('modalColor').value;
+
+    // Set summary text in the checkout modal
+    document.getElementById('summaryText').innerHTML = `Ordering: <strong>${name}</strong> (${color}) x${qty}`;
+
+    // Switch Modals
+    productModal.style.display = 'none';
+    checkoutModal.classList.add('active'); 
+};
 
 // =========================
-// INITIAL LOAD
+// STEP 3: FINAL PAYMENT
 // =========================
+document.getElementById('checkoutForm').onsubmit = async (e) => {
+    e.preventDefault();
+
+    const payBtn = document.getElementById('payNowBtn');
+    payBtn.innerText = "Processing...";
+    payBtn.disabled = true;
+
+    const productName = document.getElementById('modalName').textContent;
+    const product = products.find(p => p.name === productName);
+    const qty = Number(document.getElementById('modalQty').value);
+
+    try {
+        const res = await fetch("http://localhost:3000/api/pay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: document.getElementById('custEmail').value,
+                amount: product.price * qty,
+                productName: `${product.name} (${document.getElementById('modalColor').value}) x${qty}`,
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value
+            })
+        });
+        const data = await res.json();
+        if (data.authorization_url) window.location.href = data.authorization_url;
+    } catch (err) {
+        alert("Payment Error. Please try again.");
+        payBtn.innerText = "Pay Now";
+        payBtn.disabled = false;
+    }
+};
+
+// Close Handlers
+closeProduct.onclick = () => productModal.style.display = 'none';
+closeCheckout.onclick = () => checkoutModal.classList.remove('active');
+
+window.onclick = (e) => {
+    if (e.target === productModal) productModal.style.display = 'none';
+    if (e.target === checkoutModal) checkoutModal.classList.remove('active');
+};
+
 fetchProducts();

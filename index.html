@@ -101,29 +101,39 @@
   <!-- ================= PRODUCT MODAL ================= -->
   <div class="product-modal" id="productModal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-
-      <div class="modal-left">
-        <img id="mainImage" src="" alt="">
-        <div class="thumbnails" id="thumbnails"></div>
-      </div>
-
-      <div class="modal-right">
-        <h3 id="modalName"></h3>
-        <p id="modalPrice"></p>
-        <p id="modalDesc"></p>
-
-        <label for="modalColor">Color</label>
-        <select id="modalColor"></select>
-
-        <label for="modalQty">Quantity</label>
-        <input type="number" id="modalQty" value="1" min="1">
-
-        <button id="modalOrderBtn">Proceed to Payment</button>
-      </div>
+        <span class="close">&times;</span>
+        <div class="modal-left">
+            <img id="mainImage" src="" alt="">
+            <div class="thumbnails" id="thumbnails"></div>
+        </div>
+        <div class="modal-right">
+            <h3 id="modalName"></h3>
+            <p id="modalPrice"></p>
+            <p id="modalDesc"></p>
+            <label for="modalColor">Color</label>
+            <select id="modalColor"></select>
+            <label for="modalQty">Quantity</label>
+            <input type="number" id="modalQty" value="1" min="1">
+            <button id="modalOrderBtn">Proceed to Payment</button>
+        </div>
     </div>
-  </div>
+</div>
 
+<div id="checkoutModal"> 
+    <div class="checkout-content"> 
+        <span class="close-checkout">&times;</span>
+        <h2>Delivery Details</h2>
+        
+        <div id="summaryText"></div> <form id="checkoutForm">
+            <input type="text" id="custName" placeholder="Full Name" required>
+            <input type="email" id="custEmail" placeholder="Email Address" required>
+            <input type="tel" id="custPhone" placeholder="Phone Number" required>
+            <textarea id="custAddress" placeholder="Home Address (Street, City, State)" required></textarea>
+            
+            <button type="submit" id="payNowBtn">Pay Now</button>
+        </form>
+    </div>
+</div>
   <!-- ================= SCRIPTS ================= -->
   <script src="script.js"></script>
   <script>
