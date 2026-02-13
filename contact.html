@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - HotshionHub</title>
+  <link rel="stylesheet" href="contact.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ========================= -->
+  <!-- MOBILE MENU BUTTON -->
+  <!-- ========================= -->
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- ========================= -->
+  <!-- MOBILE SIDEBAR -->
+  <!-- ========================= -->
+  <div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()">✕</button>
+    <ul>
+      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
+      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
+      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ========================= -->
+  <!-- HEADER -->
+  <!-- ========================= -->
+  <header>
+    <h1>HotshionHub</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ========================= -->
+  <!-- CONTACT FORM SECTION -->
+  <!-- ========================= -->
+  <section class="section">
+    <h2>Contact Us</h2>
+    <div class="contact">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="tel" id="phone" placeholder="Phone Number" required>
+      <textarea id="message" placeholder="Your Message........"></textarea>
+      <button onclick="sendOrder()">Send via WhatsApp</button>
+    </div>
+  </section>
+
+  <!-- ========================= -->
+  <!-- FOOTER -->
+  <!-- ========================= -->
+  <footer>
+    <p>© 2026 HotshionHub. All Rights Reserved.</p>
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ========================= -->
+  <!-- SCRIPTS -->
+  <!-- ========================= -->
+  <script>
+    function sendOrder() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const message = document.getElementById('message').value;
+      const whatsappNumber = '2347062161794'; // HotshionHub WhatsApp number
+
+      const text = `Name: ${name}%0APhone: ${phone}%0AMessage: ${message}`;
+      window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
+    }
+  </script>
+  <script src="script.js"></script>
+
+</body>
+</html>

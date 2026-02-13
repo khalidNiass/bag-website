@@ -1,0 +1,259 @@
+/* ========================== */
+/* ADMIN PAGE STYLES          */
+/* ========================== */
+
+body {
+  background: #f5f5f5;
+  color: #333;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+header {
+  background: #f39c12;
+  color: #fff;
+  padding: 20px 50px;
+  text-align: center;
+  font-size: 28px;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Section Title */
+.section h2 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 36px;
+  color: #111;
+}
+
+/* Form Styling */
+form#productForm {
+  background: #fff;
+  max-width: 600px;
+  margin: auto;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+form#productForm input,
+form#productForm select,
+form#productForm button {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+
+/* Select Dropdown Styling */
+form#productForm select {
+  background: #fff;
+  cursor: pointer;
+  transition: border 0.3s;
+}
+
+form#productForm select:hover,
+form#productForm select:focus {
+  border-color: #f39c12;
+  outline: none;
+}
+
+/* Submit Button */
+form#productForm button {
+  background: #f39c12;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+form#productForm button:hover {
+  background: #e67e22;
+}
+
+/* Existing Products List */
+#existingProducts {
+  max-width: 800px;
+  margin: 30px auto 60px;
+}
+
+.product-admin {
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.product-admin img {
+  border-radius: 8px;
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.product-admin .info {
+  flex: 1;
+}
+
+.product-admin .info strong {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.product-admin .info span {
+  font-size: 14px;
+  color: #f39c12;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+  background: #fce5d0;
+}
+
+/* Delete Button */
+.product-admin button.delete-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.product-admin button.delete-btn:hover {
+  background: #c0392b;
+}
+
+/* ========================== */
+/* TEXTAREA STYLING           */
+/* ========================== */
+
+form#productForm textarea {
+  width: 100%;
+  padding: 15px;
+  min-height: 120px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  resize: vertical;
+  margin-bottom: 20px;
+}
+
+/* ========================== */
+/* FILE INPUT STYLING         */
+/* ========================== */
+
+form#productForm input[type="file"] {
+  padding: 12px;
+  border: 2px dashed #f39c12;
+  background: #fff8ee;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+form#productForm input[type="file"]::-webkit-file-upload-button {
+  background: #f39c12;
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+form#productForm input[type="file"]::-webkit-file-upload-button:hover {
+  background: #e67e22;
+}
+
+/* ========================== */
+/* MULTI-SELECT (COLORS)      */
+/* ========================== */
+
+form#productForm select[multiple] {
+  height: 120px;
+  padding: 10px;
+}
+
+form#productForm select[multiple] option {
+  padding: 8px;
+}
+
+/* ========================== */
+/* EXISTING PRODUCT DETAILS   */
+/* ========================== */
+
+.product-admin .info p {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Color badges */
+.color-tag {
+  display: inline-block;
+  background: #eee;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-right: 6px;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+/* ========================== */
+/* BADGE STYLING              */
+/* ========================== */
+
+.badge-admin {
+  background: #f39c12;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+
+/* Responsive */
+@media(max-width: 768px){
+  header {
+    font-size: 24px;
+    padding: 15px 20px;
+  }
+
+  form#productForm {
+    padding: 25px;
+  }
+
+  .product-admin {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-admin img {
+    margin-bottom: 10px;
+  }
+
+  .product-admin button {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
+}

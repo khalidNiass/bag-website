@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shop premium bags, shoes, clothes, watches and accessories at HotshionHub">
+  <title>HotshionHub | Fashion Store</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- ================= MOBILE MENU ================= -->
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()">✕</button>
+    <ul>
+      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
+      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
+      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <h1>HotshionHub</h1>
+    <nav>
+      <div id="navLinks" class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero">
+    <h2>Stay Stylish Every Day</h2>
+    <p>Clothing, Shoes, Accessories & More</p>
+    <a href="shop.html" class="hero-btn">Shop Now</a>
+  </section>
+
+  <!-- ================= FEATURED PRODUCTS ================= -->
+  <section class="section">
+    <h2>Featured Products</h2>
+    <div class="products" id="featuredProducts"></div>
+  </section>
+
+  <!-- ================= TESTIMONIALS ================= -->
+  <section class="section">
+    <h2>What Our Customers Say</h2>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"Absolutely love my new leather bag! Great quality and delivery was fast."</p>
+        <h4>- Ada O.</h4>
+      </div>
+      <div class="testimonial">
+        <p>"The backpack is perfect for travel. Stylish and spacious!"</p>
+        <h4>- Emeka T.</h4>
+      </div>
+      <div class="testimonial">
+        <p>"HotshionHub bags are worth every Naira. Highly recommended."</p>
+        <h4>- Fatima K.</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NEWSLETTER ================= -->
+  <section class="section newsletter">
+    <h2>Subscribe & Get 10% Off</h2>
+    <form id="newsletterForm">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>© 2026 HotshionHub. All Rights Reserved.</p>
+
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ================= PRODUCT MODAL ================= -->
+  <div class="product-modal" id="productModal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+
+      <div class="modal-left">
+        <img id="mainImage" src="" alt="">
+        <div class="thumbnails" id="thumbnails"></div>
+      </div>
+
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p id="modalPrice"></p>
+        <p id="modalDesc"></p>
+
+        <label for="modalColor">Color</label>
+        <select id="modalColor"></select>
+
+        <label for="modalQty">Quantity</label>
+        <input type="number" id="modalQty" value="1" min="1">
+
+        <button id="modalOrderBtn">Proceed to Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="script.js"></script>
+  <script>
+    // ================= SEARCH FORM =================
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+
+    if (searchForm) {
+      searchForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // prevent page reload
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop | HotshionHub</title>
+  <link rel="stylesheet" href="shop.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ========================= -->
+  <!-- MOBILE MENU BUTTON -->
+  <!-- ========================= -->
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- ========================= -->
+  <!-- MOBILE SIDEBAR -->
+  <!-- ========================= -->
+  <div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()">✕</button>
+    <ul>
+      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
+      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
+      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ========================= -->
+  <!-- HEADER -->
+  <!-- ========================= -->
+  <header>
+    <h1>HotshionHub</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ========================= -->
+  <!-- SHOP SECTION -->
+  <!-- ========================= -->
+  <section class="section">
+
+    <!-- Search Bar -->
+    <input
+      type="text"
+      id="shopSearch"
+      placeholder="Search products..."
+      style="width:100%; padding:12px; margin-bottom:20px;"
+    >
+
+    <h2>Our Collection</h2>
+
+    <!-- Category Filters -->
+    <div class="category-filter">
+      <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="bags">Bags</button>
+      <button class="filter-btn" data-category="shoes">Shoes</button>
+      <button class="filter-btn" data-category="watches">Watches</button>
+      <button class="filter-btn" data-category="clothes">Clothes</button>
+      <button class="filter-btn" data-category="accessories">Accessories</button>
+
+      <!-- Gender Dropdown -->
+      <div class="gender-filter">
+        <button class="filter-btn gender-btn" id="genderBtn">Gender ▾</button>
+        <div class="gender-menu">
+          <label><input type="checkbox" value="men"> Men</label>
+          <label><input type="checkbox" value="women"> Women</label>
+        </div>
+      </div>
+
+      <!-- Badge Dropdown -->
+      <div class="badge-dropdown">
+        <button id="badgeBtn">Badge ▾</button>
+        <div class="badge-menu">
+          <label><input type="checkbox" value="NEW"> NEW</label>
+          <label><input type="checkbox" value="HOT"> HOT</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid (JS will inject products here) -->
+    <div class="products"></div>
+  </section>
+
+  <!-- ========================= -->
+  <!-- FOOTER -->
+  <!-- ========================= -->
+  <footer>
+    <p>© 2026 HotshionHub. All Rights Reserved.</p>
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ========================= -->
+  <!-- PRODUCT MODAL -->
+  <!-- ========================= -->
+  <div class="product-modal" id="productModal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+
+      <div class="modal-left">
+        <img id="mainImage" src="" alt="">
+        <div class="thumbnails" id="thumbnails"></div>
+      </div>
+
+      <div class="modal-right">
+        <h3 id="modalName"></h3>
+        <p id="modalPrice"></p>
+        <p id="modalDesc"></p>
+
+        <label>Color</label>
+        <select id="modalColor"></select>
+
+        <label>Quantity</label>
+        <input type="number" id="modalQty" value="1" min="1">
+
+        <button id="modalOrderBtn">Proceed to Payment</button>
+      </div>
+    </div>
+  </div>
+<div id="checkoutModal"> <div class="checkout-content"> <span class="close-checkout">&times;</span>
+        <h2>Delivery Details</h2>
+        <form id="checkoutForm">
+            <input type="text" id="custName" placeholder="Full Name" required>
+            <input type="email" id="custEmail" placeholder="Email Address" required>
+            <input type="tel" id="custPhone" placeholder="Phone Number" required>
+            <textarea id="custAddress" placeholder="Home Address" required></textarea>
+            
+            <p id="summaryText" style="text-align: center; font-weight: bold; margin: 10px 0; color: #333;"></p>
+            <button type="submit" id="payNowBtn">Pay Now</button>
+        </form>
+    </div>
+</div>
+  <!-- ========================= -->
+  <!-- SCRIPTS -->
+  <!-- ========================= -->
+  <script src="shop.js"></script>
+</body>
+</html>
