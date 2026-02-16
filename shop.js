@@ -62,8 +62,15 @@ const modalOrderBtn = document.getElementById('modalOrderBtn');
 // =======================
 async function fetchProductsFromSheet() {
   try {
-    container.innerHTML = "<p class='loading'>Loading collection...</p>";
+    // 1. Tell the loader we are starting the "Internet Fetch"
+    const loaderText = document.getElementById("loader-text");
+    if (loaderText) loaderText.innerText = "Connecting to shop...";
+
     const res = await fetch(API_URL);
+    
+    // If internet is down or server fails, this throws to the CATCH block
+    if (!res.ok) throw new Error("Server not responding");
+
     const data = await res.json();
 
     products = data.map(p => ({
@@ -78,11 +85,42 @@ async function fetchProductsFromSheet() {
       badge: p.badge || ""
     }));
 
+    // 2. Build the product cards in the HTML
     renderProducts();
+
+    // 3. WAIT for the actual product images to download from the internet
+    if (loaderText) loaderText.innerText = "Downloading images...";
+    await waitForImages();
+
+    // 4. SUCCESS: Only now do we call the function in loading.js to hide the screen
+    if (typeof window.hideMyLoader === "function") {
+      window.hideMyLoader();
+    }
+
   } catch (err) {
     console.error("FETCH ERROR:", err);
-    container.innerHTML = "<p>⚠️ Unable to load products. Please refresh.</p>";
+    
+    // 5. FAIL: Tell the user why they are stuck. Loader stays up forever.
+    if (typeof window.showLoaderError === "function") {
+      window.showLoaderError("No Internet Connection. Reconnecting...");
+    }
+    
+    // Automatically try to reconnect every 5 seconds
+    setTimeout(fetchProductsFromSheet, 5000);
   }
+}
+
+// Helper function to track image download progress
+function waitForImages() {
+  const imgs = container.querySelectorAll('img');
+  const promises = Array.from(imgs).map(img => {
+    return new Promise((resolve) => {
+      if (img.complete) resolve();
+      img.onload = resolve;
+      img.onerror = resolve; // Count it even if image 404s
+    });
+  });
+  return Promise.all(promises);
 }
 
 // =======================

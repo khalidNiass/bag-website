@@ -11,7 +11,13 @@
 </head>
 
 <body>
-
+<div id="loader-wrapper">
+    <div class="loader-container">
+        <div class="loader-ring"></div>
+        <div class="loader-pulse"></div>
+    </div>
+    <p id="loader-text">Style is loading</p>
+</div>
   <!-- ================= MOBILE MENU ================= -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
@@ -136,6 +142,7 @@
 </div>
   <!-- ================= SCRIPTS ================= -->
   <script src="script.js"></script>
+  <script src="loasding.js"></script>
   <script>
     // ================= SEARCH FORM =================
     const searchForm = document.getElementById('searchForm');
