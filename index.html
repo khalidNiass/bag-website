@@ -1,164 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Shop premium bags, shoes, clothes, watches and accessories at HotshionHub">
-  <title>HotshionHub | Fashion Store</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotshionHub | Luxury Retail</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
+
 <div id="loader-wrapper">
-    <div class="loader-container">
-        <div class="loader-ring"></div>
-        <div class="loader-pulse"></div>
-    </div>
-    <p id="loader-text">Style is loading</p>
+    <div class="loader-ring"></div>
+    <p id="loader-text">HotshionHub</p>
 </div>
-  <!-- ================= MOBILE MENU ================= -->
-  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
-  <div class="mobile-sidebar" id="mobileSidebar">
-    <button class="close-btn" onclick="closeSidebar()">✕</button>
-    <ul>
-      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
-      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
-      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
-    </ul>
-  </div>
-
-  <!-- ================= HEADER ================= -->
-  <header>
+<header>
     <h1>HotshionHub</h1>
     <nav>
-      <div id="navLinks" class="nav-links">
-        <a href="index.html" class="active">Home</a>
-        <a href="shop.html">Shop</a>
-        <a href="contact.html">Contact</a>
-      </div>
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
     </nav>
-  </header>
+    <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i> MENU</button>
+</header>
 
-  <!-- ================= HERO SECTION ================= -->
-  <section class="hero">
-    <h2>Stay Stylish Every Day</h2>
-    <p>Clothing, Shoes, Accessories & More</p>
-    <a href="shop.html" class="hero-btn">Shop Now</a>
-  </section>
-
-  <!-- ================= FEATURED PRODUCTS ================= -->
-  <section class="section">
-    <h2>Featured Products</h2>
-    <div class="products" id="featuredProducts"></div>
-  </section>
-
-  <!-- ================= TESTIMONIALS ================= -->
-  <section class="section">
-    <h2>What Our Customers Say</h2>
-    <div class="testimonials">
-      <div class="testimonial">
-        <p>"Absolutely love my new leather bag! Great quality and delivery was fast."</p>
-        <h4>- Ada O.</h4>
-      </div>
-      <div class="testimonial">
-        <p>"The backpack is perfect for travel. Stylish and spacious!"</p>
-        <h4>- Emeka T.</h4>
-      </div>
-      <div class="testimonial">
-        <p>"HotshionHub bags are worth every Naira. Highly recommended."</p>
-        <h4>- Fatima K.</h4>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= NEWSLETTER ================= -->
-  <section class="section newsletter">
-    <h2>Subscribe & Get 10% Off</h2>
-    <form id="newsletterForm">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
-  </section>
-
-  <!-- ================= FOOTER ================= -->
-  <footer>
-    <p>© 2026 HotshionHub. All Rights Reserved.</p>
-
-    <div class="footer-social">
-      <h3>Follow Us</h3>
-      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp"></i>
-      </a>
-    </div>
-  </footer>
-
-  <!-- ================= PRODUCT MODAL ================= -->
-  <div class="product-modal" id="productModal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="modal-left">
-            <img id="mainImage" src="" alt="">
-            <div class="thumbnails" id="thumbnails"></div>
-        </div>
-        <div class="modal-right">
-            <h3 id="modalName"></h3>
-            <p id="modalPrice"></p>
-            <p id="modalDesc"></p>
-            <label for="modalColor">Color</label>
-            <select id="modalColor"></select>
-            <label for="modalQty">Quantity</label>
-            <input type="number" id="modalQty" value="1" min="1">
-            <button id="modalOrderBtn">Proceed to Payment</button>
-        </div>
-    </div>
+<div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="shop.html"><i class="fas fa-gem"></i> Collections</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Support</a></li>
+    </ul>
 </div>
 
-<div id="checkoutModal"> 
-    <div class="checkout-content"> 
-        <span class="close-checkout">&times;</span>
-        <h2>Delivery Details</h2>
-        
-        <div id="summaryText"></div> <form id="checkoutForm">
-            <input type="text" id="custName" placeholder="Full Name" required>
-            <input type="email" id="custEmail" placeholder="Email Address" required>
-            <input type="tel" id="custPhone" placeholder="Phone Number" required>
-            <textarea id="custAddress" placeholder="Home Address (Street, City, State)" required></textarea>
-            
-            <button type="submit" id="payNowBtn">Pay Now</button>
+<section class="hero">
+    <p>ESTABLISHED 2026</p>
+    <h2>New Arrivals</h2>
+    <p>Premium Quality. Timeless Style.</p>
+    <a href="shop.html" class="hero-btn">Explore Collection</a>
+</section>
+
+<section class="section">
+    <h2>Featured Selection</h2>
+    <div class="products" id="featuredProducts"></div>
+</section>
+
+<section class="section testimonials-section">
+    <h2>Client Stories</h2>
+    <div class="testimonial-slider">
+        <div class="testimonial-track">
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"The quality of craftsmanship is immediately evident. Truly premium."</p>
+                <h4>— Sarah Johnson</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"Fast shipping and the packaging was beautiful. A 5-star experience."</p>
+                <h4>— Michael Chen</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"HotshionHub has become my go-to for statement pieces."</p>
+                <h4>— Elena Rodriguez</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"Superior customer service and world-class designs. Highly recommend."</p>
+                <h4>— David Okon</h4>
+            </div>
+
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"The quality of craftsmanship is immediately evident. Truly premium."</p>
+                <h4>— Sarah Johnson</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"Fast shipping and the packaging was beautiful. A 5-star experience."</p>
+                <h4>— Michael Chen</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"HotshionHub has become my go-to for statement pieces."</p>
+                <h4>— Elena Rodriguez</h4>
+            </div>
+            <div class="testimonial">
+                <i class="fas fa-quote-left"></i>
+                <p>"Superior customer service and world-class designs. Highly recommend."</p>
+                <h4>— David Okon</h4>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section newsletter">
+    <div style="max-width: 600px; margin: 0 auto;">
+        <h2>The Insider</h2>
+        <p style="margin-bottom: 30px;">Join our list for exclusive releases and private sales.</p>
+        <form id="newsletterForm" style="display: flex; gap: 0;">
+            <input type="email" placeholder="EMAIL ADDRESS" required style="flex:1; padding: 15px; border: 1px solid #ddd;">
+            <button type="submit" style="background: #121212; color: white; border: none; padding: 0 30px; letter-spacing: 2px; font-size: 0.7rem;">JOIN</button>
         </form>
     </div>
-</div>
-  <!-- ================= SCRIPTS ================= -->
-  <script src="script.js"></script>
-  <script src="loasding.js"></script>
-  <script>
-    // ================= SEARCH FORM =================
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
+</section>
 
-    if (searchForm) {
-      searchForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // prevent page reload
-        const query = searchInput.value.trim();
-        if (query) {
-          window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
-        }
-      });
-    }
-  </script>
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h3>HotshionHub</h3>
+            <p>Redefining luxury retail with timeless style and premium quality craftsmanship. Established 2026.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Collections</h4>
+            <ul>
+                <li><a href="shop.html">New Arrivals</a></li>
+                <li><a href="shop.html">Best Sellers</a></li>
+                <li><a href="shop.html">Men's Collection</a></li>
+                <li><a href="shop.html">Women's Collection</a></li>
+                <li><a href="shop.html">Accessories</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Customer Care</h4>
+            <ul>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#">Shipping & Returns</a></li>
+                <li><a href="#">Track Your Order</a></li>
+                <li><a href="#">Size Guide</a></li>
+                <li><a href="#">FAQs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 HOTSHIONHUB. ALL RIGHTS RESERVED.</p>
+        <div class="payment-icons">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-cc-apple-pay"></i>
+        </div>
+    </div>
+</footer>
+
+<script src="loasding.js"></script>
+<script src="script.js"></script>
 
 </body>
-
 </html>
