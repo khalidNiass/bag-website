@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Details | HotshionHub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="product-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-ring"></div>
+        <p id="loader-text">Style is loading</p>
+    </div>
+
+    <header>
+        <h1>HotshionHub</h1>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="shop.html" class="active"><i class="fas fa-shopping-bag"></i> Shop</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+        </nav>
+        <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <button class="close-btn" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="shop.html"><i class="fas fa-gem"></i> Collections</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Support</a></li>
+        </ul>
+    </div>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="index.html">Home</a> <span>/</span> 
+            <a href="shop.html">Shop</a> <span>/</span> 
+            <span id="current-breadcrumb">Product Details</span>
+        </div>
+    </div>
+
+    <section class="product-details-container">
+        <div class="details-left">
+            <div class="main-img-wrapper">
+                <img id="main-product-img" src="" alt="Product Image">
+            </div>
+            <div id="thumbnail-container" class="thumbnail-grid">
+                </div>
+        </div>
+
+        <div class="details-right">
+            <h1 id="product-title">Loading Piece...</h1>
+            <p class="price" id="product-price">₦0</p>
+            <div class="divider"></div>
+            <p class="description" id="product-desc">
+                Fetching details from our master collection...
+            </p>
+
+            <div class="options">
+                <div class="option-group">
+                    <label>Select Color</label>
+                    <select id="modalColor">
+                        </select>
+                </div>
+
+                <div class="option-group">
+                    <label>Quantity</label>
+                    <div class="qty-selector">
+                        <button type="button" onclick="changeQty(-1)">-</button>
+                        <input type="number" id="qty" value="1" readonly>
+                        <button type="button" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="buy-now-btn" id="payNowBtn">Complete Purchase</button>
+            <p class="secure-note"><i class="fas fa-shield-alt"></i> Secure Payment via Paystack</p>
+        </div>
+    </section>
+
+    <div id="checkoutModal" class="checkout-overlay">
+        <div class="checkout-content">
+            <button class="close-checkout" onclick="closeCheckout()">&times;</button>
+            <h2>Delivery Details</h2>
+            <p>Please provide your information to complete the order.</p>
+            
+            <form id="detailsCheckoutForm">
+                <div class="form-group">
+                    <input type="text" id="custName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="custEmail" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="custPhone" placeholder="Phone Number" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="custAddress" placeholder="Full Delivery Address (Street, City, State)" required></textarea>
+                </div>
+                
+                <div class="order-summary">
+                    <span>Total Amount:</span>
+                    <span id="summaryPrice">₦0</span>
+                </div>
+                
+                <button type="submit" id="finalPayBtn">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>HotshionHub</h3>
+                <p>Redefining luxury retail with timeless style and premium quality craftsmanship. Established 2026.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Collections</h4>
+                <ul>
+                    <li><a href="shop.html">New Arrivals</a></li>
+                    <li><a href="shop.html">Best Sellers</a></li>
+                    <li><a href="shop.html">Men's Collection</a></li>
+                    <li><a href="shop.html">Women's Collection</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Customer Care</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Track Your Order</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 HOTSHIONHUB. ALL RIGHTS RESERVED.</p>
+            <div class="payment-icons">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script src="loasding.js"></script>
+    <script src="product-details.js"></script>
+</body>
+</html>

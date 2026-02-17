@@ -77,25 +77,50 @@ body {
    HEADER & NAVIGATION
 ================================================================ */
 header {
-    height: 90px;
-    padding: 0 8%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    border-bottom: 1px solid var(--border);
+    padding: 20px 5%;
+    transition: all 0.4s ease;
+    background-color: transparent; /* Default state */
 }
 
-header h1 { 
-    letter-spacing: 4px; 
-    text-transform: uppercase; 
-    font-size: 1.3rem; 
-    font-weight: 900; 
-    cursor: pointer;
+/* This class will be added by JavaScript when scrolling */
+header.scrolled {
+    background-color: #ffffff; /* Or your dark theme color */
+    padding: 15px 5%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Adjust text color based on scroll */
+header.scrolled h1, 
+header.scrolled nav a, 
+header.scrolled .menu-btn {
+    color: #000000; 
+}
+
+/* Initial state text color (Make sure this is visible over your Hero image) */
+header h1, nav a, .menu-btn {
+    color: #ffffff; 
+}
+
+/* Push the content down on other pages so the fixed header doesn't cover text */
+body {
+    padding-top: 0; /* Hero pages start at the very top */
+}
+
+/* For pages WITHOUT a hero (like Shop or Details), add a class to the body */
+body.inner-page {
+    padding-top: 80px; /* Adjust based on your header height */
+}
+body.inner-page header {
+    background-color: #ffffff;
+    color: #000;
 }
 
 nav a {

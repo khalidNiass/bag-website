@@ -1,1 +1,136 @@
-.loader-hidden { opacity: 0; visibility: hidden; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop | HotshionHub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="shop.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div id="loader-wrapper">
+    <div class="loader-ring"></div>
+    <p id="loader-text">Style is loading</p>
+</div>
+
+<header>
+    <h1>HotshionHub</h1>
+    <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    </nav>
+    <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+</header>
+
+<div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="shop.html"><i class="fas fa-gem"></i> Collections</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Support</a></li>
+    </ul>
+</div>
+
+
+<section class="section">
+    <div class="search-container">
+        <input type="text" id="shopSearch" placeholder="Search our collection...">
+        <i class="fas fa-search"></i>
+    </div>
+    <div class="breadcrumbs">
+    <a href="index.html">Home</a> <span>/</span> <a href="shop.html">Shop</a>
+</div>
+    <div class="shop-header">
+        <h2>Our Collection</h2>
+    </div>
+
+    <div class="category-filter">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="bags">Bags</button>
+        <button class="filter-btn" data-category="shoes">Shoes</button>
+        <button class="filter-btn" data-category="watches">Watches</button>
+        <button class="filter-btn" data-category="clothes">Clothes</button>
+
+        <div class="filter-dropdown">
+            <button class="filter-btn">Gender <i class="fas fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <label><input type="checkbox" value="men"> Men</label>
+                <label><input type="checkbox" value="women"> Women</label>
+            </div>
+        </div>
+
+        <div class="filter-dropdown">
+            <button class="filter-btn">Status <i class="fas fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <label><input type="checkbox" value="NEW"> New Arrival</label>
+                <label><input type="checkbox" value="HOT"> Best Seller</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="products" id="shopGrid">
+        </div>
+</section>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h3>HotshionHub</h3>
+            <p>Redefining luxury retail with timeless style and premium quality craftsmanship. Established 2026.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Collections</h4>
+            <ul>
+                <li><a href="shop.html">New Arrivals</a></li>
+                <li><a href="shop.html">Best Sellers</a></li>
+                <li><a href="shop.html">Men's Collection</a></li>
+                <li><a href="shop.html">Women's Collection</a></li>
+                <li><a href="shop.html">Accessories</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Customer Care</h4>
+            <ul>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#">Shipping & Returns</a></li>
+                <li><a href="#">Track Your Order</a></li>
+                <li><a href="#">Size Guide</a></li>
+                <li><a href="#">FAQs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 HOTSHIONHUB. ALL RIGHTS RESERVED.</p>
+        <div class="payment-icons">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-cc-apple-pay"></i>
+        </div>
+    </div>
+</footer>
+<script src="loasding.js"></script>
+<script src="script.js"></script>
+<script src="shop.js"></script>
+</body>
+</html>

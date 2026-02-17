@@ -1,148 +1,190 @@
+/* ================================================================
+   SHOP PAGE SPECIFIC STYLES
+================================================================ */
+
+/* 1. Breadcrumbs (Small but vital for luxury sites) */
 /* ============================================= */
-/* SHOP PAGE SPECIFIC STYLES                     */
+/* BREADCRUMBS STYLING                           */
 /* ============================================= */
 
-/* 1. Category & Filter Buttons */
+.breadcrumbs {
+    background-color: #fcfcfc; /* Very light grey background */
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 40px;
+}
+
+.breadcrumbs .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+    color: #000; /* Darker on hover */
+}
+
+.breadcrumbs span {
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+#current-breadcrumb {
+    color: #222; /* Darker color for the current page */
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+    .breadcrumbs {
+        padding: 15px 0;
+        margin-bottom: 20px;
+    }
+}
+
+/* 2. Search Box Styling */
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 50px;
+}
+.search-container input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+.search-container input:focus { border-bottom-color: var(--primary); }
+.search-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+/* 3. Category & Filter Buttons (Modern Minimalist) */
 .category-filter {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 50px;
-  gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+    gap: 15px;
 }
 
-.category-filter .filter-btn {
-  background: #fff;
-  color: #f39c12;
-  border: 2px solid #f39c12;
-  padding: 12px 25px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-  outline: none;
-  min-width: 120px;
-  text-align: center;
+.filter-btn {
+    background: #fff;
+    color: var(--dark);
+    border: 1px solid var(--border);
+    padding: 10px 25px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
 }
 
-.category-filter .filter-btn:hover,
-.category-filter .filter-btn.active {
-  background: #f39c12;
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+.filter-btn:hover, .filter-btn.active {
+    background: var(--dark);
+    color: #fff;
+    border-color: var(--dark);
 }
 
-/* 2. Dropdown Filter Menus (Gender & Badge) */
-.gender-filter, .badge-dropdown {
-  position: relative;
+/* 4. Dropdowns (Gender & Status) */
+.filter-dropdown {
+    position: relative;
 }
 
-.gender-btn, #badgeBtn {
-  background: #fff;
-  color: #f39c12;
-  border: 2px solid #f39c12;
-  padding: 12px 25px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-  min-width: 120px;
-  text-align: center;
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: none; /* Controlled by Hover or JS */
+    z-index: 100;
+    min-width: 200px;
+    border: 1px solid var(--border);
 }
 
-.gender-menu, .badge-menu {
-  position: absolute;
-  top: 55px;
-  left: 0;
-  background: #fff;
-  border-radius: 15px;
-  padding: 15px 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  display: none; /* Controlled by JS .show class */
-  z-index: 100;
-  min-width: 180px;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
+.filter-dropdown:hover .dropdown-content {
+    display: block;
+    animation: fadeIn 0.3s ease;
 }
 
-.gender-menu.show, .badge-menu.show {
-  display: block !important;
-  opacity: 1;
-  transform: translateY(0);
+.dropdown-content label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.gender-menu label, .badge-menu label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: color 0.2s;
+.dropdown-content input {
+    accent-color: var(--primary);
 }
 
-.gender-menu label:hover, .badge-menu label:hover {
-  color: #f39c12;
-}
-
-.gender-menu input, .badge-menu input {
-  accent-color: #f39c12;
-  cursor: pointer;
-}
-
-/* 3. Shop Product Grid Adjustments */
-/* Note: Base .products and .product styles are in style.css */
+/* 5. Product Grid Adjustments */
 .products {
-  padding: 0 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px;
 }
 
-.product {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-}
-
-.product h3 {
-  min-height: 48px; /* Keeps layout consistent with varying title lengths */
-}
-
-/* 4. Shop-Specific Buttons */
+/* Shop-Specific Buttons (To move to Details Page) */
 .product .view-btn {
-  margin-top: 10px;
-  width: 100%;
-  padding: 12px 20px;
-  background: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 16px;
-  transition: all 0.3s;
+    margin-top: 15px;
+    width: 100%;
+    padding: 15px;
+    background: none;
+    border: 1px solid var(--dark);
+    color: var(--dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .product .view-btn:hover {
-  background: #34495e;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    background: var(--dark);
+    color: #fff;
 }
 
-/* 5. Shop-Specific Responsive Tweaks */
-@media(max-width: 768px){
-  .category-filter {
-    flex-direction: row;
-    gap: 10px;
-  }
+/* 6. Responsive Fixes */
+@media (max-width: 768px) {
+    .products { grid-template-columns: 1fr 1fr; gap: 15px; }
+    .category-filter { gap: 8px; }
+    .filter-btn { padding: 8px 15px; font-size: 0.65rem; }
 }
 
-@media(max-width: 480px){
-  .category-filter .filter-btn {
-    width: 90%;
-    padding: 12px 0;
-    font-size: 15px;
-  }
-  .product h3 {
-    font-size: 18px;
-  }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

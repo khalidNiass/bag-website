@@ -6,6 +6,7 @@
   <title>Contact - HotshionHub</title>
   <link rel="stylesheet" href="contact.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="shop.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -17,83 +18,139 @@
     <p id="loader-text">Style is loading</p>
 </div>
   <!-- ========================= -->
-  <!-- MOBILE MENU BUTTON -->
-  <!-- ========================= -->
-  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-
-  <!-- ========================= -->
-  <!-- MOBILE SIDEBAR -->
-  <!-- ========================= -->
-  <div class="mobile-sidebar" id="mobileSidebar">
-    <button class="close-btn" onclick="closeSidebar()">✕</button>
-    <ul>
-      <li><a href="index.html" onclick="closeSidebar()">Home</a></li>
-      <li><a href="shop.html" onclick="closeSidebar()">Shop</a></li>
-      <li><a href="contact.html" onclick="closeSidebar()">Contact</a></li>
-    </ul>
-  </div>
-
-  <!-- ========================= -->
   <!-- HEADER -->
   <!-- ========================= -->
   <header>
     <h1>HotshionHub</h1>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="contact.html" class="active">Contact</a>
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
     </nav>
-  </header>
+    <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+</header>
+
+<div class="mobile-sidebar" id="mobileSidebar">
+    <button class="close-btn" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="shop.html"><i class="fas fa-gem"></i> Collections</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Support</a></li>
+    </ul>
+</div>
 
   <!-- ========================= -->
   <!-- CONTACT FORM SECTION -->
   <!-- ========================= -->
-  <section class="section">
-    <h2>Contact Us</h2>
-    <div class="contact">
-      <input type="text" id="name" placeholder="Your Name" required>
-      <input type="tel" id="phone" placeholder="Phone Number" required>
-      <textarea id="message" placeholder="Your Message........"></textarea>
-      <button onclick="sendOrder()">Send via WhatsApp</button>
+<section class="section">
+    <div class="breadcrumbs">
+        <a href="index.html">Home</a> <span>/</span> <a href="contact.html">Contact</a>
     </div>
-  </section>
+
+    <div class="contact-header">
+        <h2>Get In Touch</h2>
+        <p>Our concierge team is available to assist you with your luxury needs.</p>
+    </div>
+
+    <div class="contact-container">
+        <div class="contact-info">
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <h4>Visit Us</h4>
+                    <p>Lagos Business District, Nigeria</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <h4>WhatsApp Concierge</h4>
+                    <p>+234 706 216 1794</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="far fa-envelope"></i>
+                <div>
+                    <h4>Email Support</h4>
+                    <p>concierge@hotshionhub.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <div class="input-row">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+            </div>
+            <textarea id="message" placeholder="How can we assist you today?" rows="5"></textarea>
+            <button class="submit-btn" onclick="sendOrder()">
+                Send to WhatsApp <i class="fab fa-whatsapp"></i>
+            </button>
+        </div>
+    </div>
+</section>
 
   <!-- ========================= -->
   <!-- FOOTER -->
   <!-- ========================= -->
-  <footer>
-    <p>© 2026 HotshionHub. All Rights Reserved.</p>
-    <div class="footer-social">
-      <h3>Follow Us</h3>
-      <a href="https://facebook.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://instagram.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a href="https://x.com/HotshionHub" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a href="https://wa.me/2347062161794?text=Hello%20HotshionHub!" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-whatsapp"></i>
-      </a>
+ <footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h3>HotshionHub</h3>
+            <p>Redefining luxury retail with timeless style and premium quality craftsmanship. Established 2026.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Collections</h4>
+            <ul>
+                <li><a href="shop.html">New Arrivals</a></li>
+                <li><a href="shop.html">Best Sellers</a></li>
+                <li><a href="shop.html">Men's Collection</a></li>
+                <li><a href="shop.html">Women's Collection</a></li>
+                <li><a href="shop.html">Accessories</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Customer Care</h4>
+            <ul>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#">Shipping & Returns</a></li>
+                <li><a href="#">Track Your Order</a></li>
+                <li><a href="#">Size Guide</a></li>
+                <li><a href="#">FAQs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+            </ul>
+        </div>
     </div>
-  </footer>
+
+    <div class="footer-bottom">
+        <p>© 2026 HOTSHIONHUB. ALL RIGHTS RESERVED.</p>
+        <div class="payment-icons">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-cc-apple-pay"></i>
+        </div>
+    </div>
+</footer>
 
   <!-- ========================= -->
   <!-- SCRIPTS -->
   <!-- ========================= -->
-  <script>
-    function sendOrder() {
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const message = document.getElementById('message').value;
-      const whatsappNumber = '2347062161794'; // HotshionHub WhatsApp number
-
-      const text = `Name: ${name}%0APhone: ${phone}%0AMessage: ${message}`;
-      window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
-    }
-  </script>
   <script src="script.js"></script>
 <script src="loasding.js"></script>
 </body>
