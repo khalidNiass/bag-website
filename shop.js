@@ -57,9 +57,6 @@ function closeSidebar() {
   if (menuBtn) menuBtn.style.display = "block";
 }
 
-// =======================
-// FETCH PRODUCTS
-// =======================
 async function fetchProductsFromSheet() {
   try {
     const loaderText = document.getElementById("loader-text");
@@ -70,7 +67,8 @@ async function fetchProductsFromSheet() {
 
     const data = await res.json();
 
-    products = data.map(p => ({
+    // FIXED: Target the products array inside the returned object
+    products = data.products.map(p => ({
       id: String(p.id),
       name: p.name || "Unnamed Product",
       price: Number(p.price) || 0,
@@ -98,7 +96,6 @@ async function fetchProductsFromSheet() {
     setTimeout(fetchProductsFromSheet, 5000);
   }
 }
-
 function waitForImages() {
   const imgs = container.querySelectorAll('img');
   const promises = Array.from(imgs).map(img => {

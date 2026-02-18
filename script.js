@@ -41,7 +41,8 @@ async function fetchProducts() {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error("Server not responding");
 
-        products = await res.json();
+        const data = await res.json();
+products = data.products || []; // Extract only the products array
         
         renderFeaturedProducts();
 
@@ -70,9 +71,14 @@ function renderFeaturedProducts() {
 
     featured.forEach(product => {
         const badgeHTML = product.badge ? `<span class="badge">${product.badge}</span>` : '';
-        const displayImg = product.images && product.images.length > 0 ? product.images[0] : 'placeholder.jpg';
         
-        // IMPORTANT: Changed button to redirect to product-details.html
+        // Fix: Handle images whether they are strings or arrays
+        let images = product.images;
+        if (typeof images === 'string') {
+            images = images.split('|');
+        }
+        const displayImg = (images && images.length > 0) ? images[0] : 'placeholder.jpg';
+        
         featuredContainer.innerHTML += `
             <div class="product">
                 ${badgeHTML}
@@ -85,7 +91,6 @@ function renderFeaturedProducts() {
             </div>`;
     });
 }
-
 // NEW: Redirect function
 function goToDetails(productId) {
     window.location.href = `product-details.html?id=${productId}`;

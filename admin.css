@@ -1,4 +1,4 @@
-   /* ================= ADMIN SPECIFIC STYLES ================= */
+/* ================= ADMIN SPECIFIC STYLES ================= */
         body {
             background: #f8f9fa;
             font-family: 'Montserrat', sans-serif;
@@ -11,7 +11,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1a1a1a;
+            background: #121212;
             color: #fff;
             padding: 15px 5%;
             position: sticky;
@@ -20,7 +20,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        header span { font-weight: 700; letter-spacing: 1px; color: #f39c12; }
+        header span { font-weight: 700; letter-spacing: 1px; color: #c5a059; }
 
         .logout-btn {
             background: #e74c3c;
@@ -35,7 +35,7 @@
         .logout-btn:hover { background: #c0392b; }
 
         .section { padding: 40px 5%; }
-        .section h2 { font-size: 24px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #f39c12; padding-left: 15px; }
+        .section h2 { font-size: 24px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #c5a059; padding-left: 15px; }
 
         /* ================= STATS GRID ================= */
         .stats-grid {
@@ -55,7 +55,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        .stat-box i { font-size: 35px; color: #f39c12; }
+        .stat-box i { font-size: 35px; color: #c5a059; }
         .stat-label { display: block; font-size: 13px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
         .stat-info h3 { margin: 0; font-size: 26px; font-weight: 700; }
 
@@ -72,7 +72,7 @@
         td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
 
         .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .status-pill.pending { background: #fff3cd; color: #856404; }
+        .status-pill.pending { background: #f9f4e8; color: #c5a059; }
         .status-pill.shipped { background: #d4edda; color: #155724; }
 
         /* ================= FORM ================= */
@@ -100,7 +100,7 @@
         label { font-size: 14px; font-weight: 600; color: #444; }
 
         .submit-btn {
-            background: #f39c12;
+            background: #c5a059;
             color: white;
             border: none;
             padding: 15px;
@@ -162,13 +162,13 @@
 
 /* When checked, change the look to Gold/Black theme */
 .color-option input:checked + span {
-    background: #1a1a1a;
-    color: #f39c12;
-    border-color: #f39c12;
+    background: #121212;
+    color: #c5a059;
+    border-color: #c5a059;
 }
 
 .color-option:hover span {
-    border-color: #f39c12;
+    border-color: #c5a059;
 }
 
 .admin-main-grid {
@@ -218,7 +218,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: #f39c12;
+    background: #c5a059;
     color: white;
     padding: 4px 10px;
     font-size: 10px;
@@ -237,7 +237,7 @@
 }
 
 .preview-info p {
-    color: #f39c12;
+    color: #c5a059;
     font-weight: 700;
 }
 
@@ -286,6 +286,40 @@
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
+/* Navigation Card Styles */
+.nav-card {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.nav-card:hover {
+    transform: translateY(-5px);
+    border-color: #c5a059; /* Gold border on hover */
+    background-color: #fcfcfc;
+}
+
+.view-link {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #c5a059;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.status-pill.pending { background: #f1c40f; color: #000; }
+.status-pill.shipped { background: #2ecc71; color: #fff; }
 
 /* Tablet & Mobile Adjustment */
 @media (max-width: 992px) {
@@ -329,4 +363,3 @@
         font-size: 14px;
     }
 }
-    

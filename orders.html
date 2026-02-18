@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotshionHub | Orders Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css"> </head>
+<body>
+    <div id="loader-wrapper">
+    <div class="loader-ring"></div>
+    <p id="loader-text">Fetching Orders...</p>
+</div>
+<div id="message"></div>
+    <header>
+        <span>HOTSHIONHUB <small>| ORDERS</small></span>
+        <a href="admin.html" class="logout-btn" style="text-decoration:none;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </header>
+
+    <section class="section">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <i class="fas fa-coins"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total Revenue</span>
+                    <h3 id="stat-revenue">₦0</h3>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total Orders</span>
+                    <h3 id="stat-orders">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <h2>Recent Customer Orders</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Ref</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-orders-list">
+                    </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script src="admin.js"></script>
+</body>
+</html>

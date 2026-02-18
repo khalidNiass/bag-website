@@ -47,8 +47,11 @@ async function loadProductDetails() {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error("Server not responding");
         
-        const products = await res.json();
-        currentProduct = products.find(p => String(p.id) === String(productId));
+        const data = await res.json();
+        
+        // FIXED: Look inside data.products instead of just 'data'
+        const productsList = data.products || [];
+        currentProduct = productsList.find(p => String(p.id) === String(productId));
 
         if (!currentProduct) {
             alert("Product not found in our collection.");
