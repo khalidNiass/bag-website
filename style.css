@@ -106,7 +106,7 @@ header.scrolled .menu-btn {
 
 /* Initial state text color (Make sure this is visible over your Hero image) */
 header h1, nav a, .menu-btn {
-    color: #ffffff; 
+    color: #000000; 
 }
 
 /* Push the content down on other pages so the fixed header doesn't cover text */

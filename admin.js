@@ -1,271 +1,244 @@
-// ===============================
-// ADMIN AUTH
-// ===============================
-function logout() {
-  localStorage.removeItem("adminLoggedIn");
-  window.location.href = "admin-login.html";
-}
-
-// ===============================
-// DOM ELEMENTS
-// ===============================
-const form = document.getElementById("productForm");
-const existingProductsEl = document.getElementById("existingProducts");
-const imageInput = document.getElementById("images");
-
-// Temporary message container
-const messageEl = document.createElement("div");
-messageEl.id = "message";
-messageEl.style.textAlign = "center";
-messageEl.style.margin = "15px 0";
-form.parentNode.insertBefore(messageEl, form);
-
-// ===============================
-// BACKEND CONFIG
-// ===============================
-const API_URL = "http://localhost:3000/api/products"; 
-
-// ===============================
-// STATE
-// ===============================
-let products = [];
+// =============================================
+// 1. CONFIGURATION & STATE
+// =============================================
+const API_URL = "http://localhost:3000/api/products";
+let allProducts = [];
 let editingProductId = null;
+let uploadedImagesBase64 = []; 
 
-// ===============================
-// UTILS
-// ===============================
-function showMessage(msg, type = "info") {
-  messageEl.textContent = msg;
-  messageEl.className = type;
-  messageEl.style.display = "block";
-  messageEl.style.opacity = "1";
-  setTimeout(() => {
-    messageEl.style.opacity = "0";
-    setTimeout(() => messageEl.style.display = "none", 300);
-  }, 3000);
+const BLANK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+// =============================================
+// UTILITY: SHOW NOTIFICATION IN CONTAINER
+// =============================================
+function showNotification(text, type = "success") {
+    const msgDiv = document.getElementById("message");
+    if (!msgDiv) return;
+
+    msgDiv.innerText = text;
+    // Apply styling
+    msgDiv.style.display = "block";
+    msgDiv.style.backgroundColor = type === "success" ? "#1a1a1a" : "#e74c3c";
+    msgDiv.style.color = "white";
+    msgDiv.style.position = "fixed";
+    msgDiv.style.top = "20px";
+    msgDiv.style.right = "20px";
+    msgDiv.style.padding = "15px 25px";
+    msgDiv.style.borderRadius = "8px";
+    msgDiv.style.zIndex = "10000";
+    msgDiv.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        msgDiv.style.display = "none";
+    }, 3000);
 }
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = err => reject(err);
-    reader.readAsDataURL(file);
-  });
-}
+// =============================================
+// 2. IMAGE HANDLING
+// =============================================
+async function handleImageUpload(input) {
+    const files = Array.from(input.files);
+    if (files.length === 0) return;
 
-// ===============================
-// SYNC FROM GOOGLE SHEET
-// ===============================
-async function syncFromGoogleSheet() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
+    uploadedImagesBase64 = []; 
 
-    // Ensure data is mapped correctly from Sheet rows
-    products = data.map(p => ({
-      id: p.id,
-      name: p.name,
-      price: Number(p.price),
-      description: p.description || "",
-      images: Array.isArray(p.images) ? p.images : (p.images ? p.images.split("|") : []),
-      colors: Array.isArray(p.colors) ? p.colors : (p.colors ? p.colors.split(",") : []),
-      category: p.category,
-      gender: p.gender,
-      badge: p.badge || ""
-    }));
-
-    renderProducts();
-  } catch (err) {
-    console.error("SYNC ERROR:", err);
-    showMessage("❌ Failed to sync products", "error");
-  }
-}
-
-// ===============================
-// ADD / EDIT PRODUCT
-// ===============================
-form.addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const price = Number(document.getElementById("price").value);
-  const description = document.getElementById("description").value.trim();
-  const category = document.getElementById("category").value;
-  const gender = document.getElementById("gender").value;
-  const badge = document.getElementById("badge").value;
-  const colors = [...document.querySelectorAll("#colorsContainer input:checked")].map(cb => cb.value);
-
-  if (!name || isNaN(price) || price <= 0) {
-    showMessage("❌ Please enter a valid name and price", "error");
-    return;
-  }
-
-  let images = [];
-  try {
-    // If editing and no new images selected, keep old ones. Else, convert new files.
-    if (editingProductId && imageInput.files.length === 0) {
-      images = products.find(p => p.id === editingProductId).images;
-    } else {
-      images = await Promise.all([...imageInput.files].map(fileToBase64));
-    }
-  } catch (err) {
-    showMessage("❌ Error reading image file", "error");
-    return;
-  }
-
-  const productData = {
-    id: editingProductId || Date.now().toString(), // Ensure ID is a string for comparison
-    name,
-    price,
-    description,
-    images,
-    colors,
-    category,
-    gender,
-    badge
-  };
-
-  // Set the action for the Google Script logic
-  const payload = editingProductId 
-    ? { ...productData, action: "edit" } 
-    : { ...productData, action: "add" };
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+    const promises = files.map(file => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedImagesBase64.push(e.target.result);
+                resolve();
+            };
+            reader.readAsDataURL(file);
+        });
     });
 
-    const result = await res.json(); // Node server sends JSON {success, message}
-    console.log("SERVER RESPONSE:", result);
+    await Promise.all(promises);
+    updatePreview(); 
+}
 
-    if (result.message === "SUCCESS" || result.message === "UPDATED") {
-      if (editingProductId) {
-        products = products.map(p => p.id === editingProductId ? productData : p);
-        showMessage("✏️ Product updated successfully!", "success");
-        editingProductId = null;
-      } else {
-        products.push(productData);
-        showMessage("✅ Product added successfully!", "success");
-      }
+// =============================================
+// 3. LIVE PREVIEW LOGIC
+// =============================================
+function updatePreview() {
+    const name = document.getElementById('name').value || "Product Name";
+    const price = document.getElementById('price').value || "0";
+    const category = document.getElementById('category').value;
+    const gender = document.getElementById('gender').value;
+    const badge = document.getElementById('badge').value;
 
-      form.reset();
-      imageInput.value = "";
-      renderProducts();
+    document.getElementById('preview-name').innerText = name;
+    document.getElementById('preview-price').innerText = `₦${Number(price).toLocaleString()}`;
+    document.getElementById('preview-category-tag').innerText = `${category.toUpperCase()} • ${gender.toUpperCase()}`;
+
+    const badgeEl = document.getElementById('preview-badge');
+    if (badge) {
+        badgeEl.innerText = badge;
+        badgeEl.style.display = 'block';
     } else {
-      showMessage("❌ Error: " + result.message, "error");
+        badgeEl.style.display = 'none';
     }
 
-  } catch (err) {
-    console.error("POST ERROR:", err);
-    showMessage("❌ Failed to send product", "error");
-  }
+    const selectedColors = Array.from(document.querySelectorAll('#colorsContainer input:checked')).map(cb => cb.value);
+    const dotsContainer = document.getElementById('preview-colors');
+    dotsContainer.innerHTML = selectedColors.map(color => 
+        `<span class="dot" style="background-color: ${color.toLowerCase()}; border: 1px solid #ddd; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></span>`
+    ).join('');
+
+    const previewImg = document.getElementById('preview-img');
+    if (uploadedImagesBase64.length > 0) {
+        previewImg.src = uploadedImagesBase64[0];
+    } else if (editingProductId) {
+        const p = allProducts.find(item => item.id === editingProductId);
+        previewImg.src = (p && p.images && p.images[0]) ? p.images[0] : BLANK_IMG;
+    } else {
+        previewImg.src = BLANK_IMG;
+    }
+}
+
+// =============================================
+// 4. CRUD OPERATIONS
+// =============================================
+
+async function syncInventory() {
+    try {
+        const res = await fetch(API_URL);
+        allProducts = await res.json();
+        renderProducts();
+        updateStats();
+    } catch (err) {
+        showNotification("Failed to sync inventory", "error");
+    }
+}
+
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    let finalImages = uploadedImagesBase64;
+    
+    if (editingProductId && uploadedImagesBase64.length === 0) {
+        const p = allProducts.find(item => item.id === editingProductId);
+        finalImages = p ? p.images : [];
+    }
+
+    if (finalImages.length === 0) {
+        showNotification("Please upload at least one image.", "error");
+        return;
+    }
+
+    const productData = {
+        action: editingProductId ? "edit" : "add",
+        id: editingProductId || Date.now().toString(),
+        name: document.getElementById('name').value,
+        price: document.getElementById('price').value,
+        category: document.getElementById('category').value,
+        gender: document.getElementById('gender').value,
+        badge: document.getElementById('badge').value,
+        description: document.getElementById('description').value,
+        images: finalImages, 
+        colors: Array.from(document.querySelectorAll('#colorsContainer input:checked')).map(cb => cb.value)
+    };
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productData)
+        });
+
+        if (res.ok) {
+            showNotification(editingProductId ? "Product Updated!" : "Product Published!", "success");
+            
+            // Reset form without reloading page
+            editingProductId = null;
+            uploadedImagesBase64 = [];
+            e.target.reset();
+            updatePreview();
+            syncInventory();
+        } else {
+            showNotification("Server error. Check image sizes.", "error");
+        }
+    } catch (err) {
+        showNotification("Connection error to server.", "error");
+    }
 });
 
-// ===============================
-// DELETE PRODUCT
-// ===============================
 async function deleteProduct(id) {
-  if (!confirm("Delete this product?")) return;
+    if (!confirm("Remove this product?")) return;
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, action: "delete" })
+        });
+        if (res.ok) {
+            showNotification("Product deleted", "success");
+            syncInventory();
+        }
+    } catch (err) {
+        showNotification("Delete failed", "error");
+    }
+}
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id, action: "delete" })
+// =============================================
+// 5. UI RENDERING
+// =============================================
+
+function renderProducts() {
+    const container = document.getElementById('existingProducts');
+    container.innerHTML = allProducts.map(p => `
+        <div class="product-admin" style="display:flex; align-items:center; gap:20px; background:white; padding:15px; margin-bottom:10px; border-radius:10px; border:1px solid #eee;">
+            <img src="${(p.images && p.images[0]) ? p.images[0] : BLANK_IMG}" style="width:60px; height:60px; object-fit:cover; border-radius:5px;">
+            <div style="flex:1">
+                <strong>${p.name}</strong>
+                <p style="margin:5px 0; color:#666;">₦${Number(p.price).toLocaleString()} | ${p.category}</p>
+            </div>
+            <div>
+                <button onclick="editProduct('${p.id}')" style="background:#3498db; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                <button onclick="deleteProduct('${p.id}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function editProduct(id) {
+    const p = allProducts.find(item => item.id === id);
+    if (!p) return;
+
+    editingProductId = p.id;
+    document.getElementById('name').value = p.name;
+    document.getElementById('price').value = p.price;
+    document.getElementById('category').value = p.category;
+    document.getElementById('gender').value = p.gender;
+    document.getElementById('badge').value = p.badge;
+    document.getElementById('description').value = p.description;
+
+    document.querySelectorAll('#colorsContainer input').forEach(cb => {
+        cb.checked = p.colors ? p.colors.includes(cb.value) : false;
     });
 
-    const result = await res.json();
-    console.log("DELETE RESPONSE:", result);
-
-    if (result.message === "DELETED") {
-      products = products.filter(p => p.id !== id);
-      renderProducts();
-      showMessage("🗑️ Product deleted", "success");
-    } else {
-      showMessage("❌ Could not delete: " + result.message, "error");
-    }
-  } catch (err) {
-    console.error("DELETE ERROR:", err);
-    showMessage("❌ Failed to delete product", "error");
-  }
+    updatePreview();
+    window.scrollTo({ top: document.querySelector('.admin-form').offsetTop - 50, behavior: 'smooth' });
 }
 
-// ===============================
-// EDIT PRODUCT (Fill form)
-// ===============================
-function editProduct(product) {
-  editingProductId = product.id;
-
-  document.getElementById("name").value = product.name;
-  document.getElementById("price").value = product.price;
-  document.getElementById("description").value = product.description;
-  document.getElementById("category").value = product.category;
-  document.getElementById("gender").value = product.gender;
-  document.getElementById("badge").value = product.badge;
-
-  document.querySelectorAll("#colorsContainer input").forEach(cb => {
-    cb.checked = product.colors.includes(cb.value);
-  });
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showMessage("✏️ Editing product. Update fields and submit.", "info");
+function updateStats() {
+    document.getElementById('stat-products').innerText = allProducts.length;
 }
 
-// ===============================
-// RENDER PRODUCTS
-// ===============================
-function renderProducts() {
-  existingProductsEl.innerHTML = "";
-
-  if (!products.length) {
-    existingProductsEl.innerHTML = "<p style='text-align:center'>No products yet</p>";
-    return;
-  }
-
-  // Display newest first
-  [...products].reverse().forEach(product => {
-    const div = document.createElement("div");
-    div.className = "product-admin";
-
-    const imagesHTML = product.images.map(img => `
-      <img src="${img}" alt="${product.name}" class="product-thumb" onerror="this.src='https://via.placeholder.com/50'">
-    `).join("");
-
-    div.innerHTML = `
-      <div class="images-container">${imagesHTML}</div>
-      <div class="info">
-        <strong>${product.name}</strong>
-        ${product.badge ? `<span class="badge-admin">${product.badge}</span>` : ""}
-        <p>₦${product.price.toLocaleString()}</p>
-        <p>${product.category} • ${product.gender}</p>
-        <div class="color-tags">${product.colors.map(c => `<span class="color-tag">${c}</span>`).join("")}</div>
-      </div>
-      <div class="actions">
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </div>
-    `;
-
-    div.querySelector(".edit-btn").onclick = () => editProduct(product);
-    div.querySelector(".delete-btn").onclick = () => deleteProduct(product.id);
-
-    existingProductsEl.appendChild(div);
-  });
+function logout() {
+    localStorage.removeItem("adminLoggedIn");
+    window.location.href = "admin-login.html";
 }
 
-// ===============================
-// IMAGE ALERT
-// ===============================
-imageInput.addEventListener("change", function () {
-  if (this.files.length > 0) {
-    showMessage(`📂 ${this.files.length} image(s) selected`, "success");
-  }
+// =============================================
+// 6. INITIALIZATION
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+    syncInventory();
+    
+    setTimeout(() => {
+        const loader = document.getElementById('loader-wrapper');
+        if(loader) loader.style.display = 'none';
+    }, 1000);
 });
-
-// ===============================
-// INITIAL LOAD
-// ===============================
-syncFromGoogleSheet();

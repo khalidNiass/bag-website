@@ -1,288 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HotshionHub Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotshionHub | Admin Dashboard</title>
 
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Redirect if admin not logged in -->
-  <!-- <script>
-    if (localStorage.getItem("adminLoggedIn") !== "true") {
-      window.location.href = "admin-login.html";
-    }
-  </script> -->
-
-  <style>
-    /* ================= BODY ================= */
-    body {
-      background: #ffffff;
-      font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      color: #1a1919;
-    }
-
-    /* ================= HEADER ================= */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f39c12;
-      color: #fff;
-      padding: 20px;
-      font-size: 28px;
-      letter-spacing: 2px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .logout {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .logout:hover {
-      background: #c0392b;
-    }
-
-    /* ================= SECTIONS ================= */
-    .section {
-      padding: 50px 20px;
-    }
-
-    .section h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 32px;
-    }
-
-    /* ================= FORM ================= */
-    form {
-      background: #fff;
-      max-width: 700px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    form input,
-    form select,
-    form textarea,
-    form button {
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    button {
-      background: #f39c12;
-      color: #fff;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #e67e22;
-    }
-
-    /* ================= COLORS ================= */
-    #colorsContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    #colorsContainer label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #eee;
-      padding: 6px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    #colorsContainer input {
-      accent-color: #f39c12;
-    }
-
-    /* ================= EXISTING PRODUCTS ================= */
-    #existingProducts {
-      max-width: 900px;
-      margin: 40px auto;
-    }
-
-    .product-admin {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 15px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    }
-
-    .product-admin img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .product-admin .info {
-      flex: 1;
-    }
-
-    .color-tag {
-      display: inline-block;
-      background: #eee;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin: 4px 5px 0 0;
-    }
-
-    .badge-admin {
-      background: #f39c12;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-left: 6px;
-    }
-
-    .delete-btn {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .delete-btn:hover {
-      background: #c0392b;
-    }
-    .edit-btn{
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .edit-btn:hover {
-      background: #c0392b;
-    }
-    /* ================= MESSAGE ================= */
-    #message {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  font-size: 16px;
-  z-index: 9999;
-  display: none; /* hidden by default */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-#message.success { background-color: #27ae60; }
-#message.error { background-color: #e74c3c; }
-#message.info { background-color: #f39c12; }
-
-  </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
-
 <body>
-<div id="loader-wrapper">
-    <div class="loader-container">
+
+    <div id="loader-wrapper">
         <div class="loader-ring"></div>
-        <div class="loader-pulse"></div>
+        <p id="loader-text">Loading Dashboard...</p>
     </div>
-    <p id="loader-text">Style is loading</p>
+
+    <header>
+        <span>HOTSHIONHUB <small>| ADMIN</small></span>
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </header>
+
+    <div id="message"></div>
+
+    <section class="section">
+        <h2>Business Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <i class="fas fa-coins"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total Revenue</span>
+                    <h3 id="stat-revenue">₦0</h3>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-shopping-cart"></i>
+                <div class="stat-info">
+                    <span class="stat-label">Total Orders</span>
+                    <h3 id="stat-orders">0</h3>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-box-open"></i>
+                <div class="stat-info">
+                    <span class="stat-label">In Stock</span>
+                    <h3 id="stat-products">0</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Customer Orders</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-orders-list">
+                    <tr>
+                        <td>Feb 18, 2026</td>
+                        <td>#HH-1002</td>
+                        <td>Amaka Okafor</td>
+                        <td>Luxury Silk Bag x1</td>
+                        <td>₦45,000</td>
+                        <td>Lekki Phase 1, Lagos</td>
+                        <td><span class="status-pill pending">Pending</span></td>
+                        <td>
+                            <button class="action-btn btn-ship" title="Mark as Shipped"><i class="fas fa-truck"></i></button>
+                            <button class="action-btn btn-delete" title="Delete Order"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+ <section class="section">
+    <h2>Add New Collection</h2>
+    <div class="admin-main-grid">
+        
+        <form class="admin-form" id="productForm">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Product Name</label>
+                    <input type="text" id="name" placeholder="Enter product name" required oninput="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>Price (₦)</label>
+                    <input type="number" id="price" placeholder="45000" required oninput="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category" required onchange="updatePreview()">
+                        <option value="bags">Bags</option>
+                        <option value="shoes">Shoes</option>
+                        <option value="watches">Watches</option>
+                        <option value="clothes">Clothes</option>
+                        <option value="accessories">Accessories</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="gender" required onchange="updatePreview()">
+                        <option value="men">Men</option>
+                        <option value="women">Women</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Badge</label>
+                    <select id="badge" onchange="updatePreview()">
+                        <option value="">None</option>
+                        <option value="NEW">NEW</option>
+                        <option value="HOT">HOT</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Available Colors</label>
+                    <div id="colorsContainer" class="color-selector-grid">
+                        <label class="color-option"><input type="checkbox" value="Black" onchange="updatePreview()"> <span>Black</span></label>
+                        <label class="color-option"><input type="checkbox" value="Brown" onchange="updatePreview()"> <span>Brown</span></label>
+                        <label class="color-option"><input type="checkbox" value="Gold" onchange="updatePreview()"> <span>Gold</span></label>
+                        <label class="color-option"><input type="checkbox" value="White" onchange="updatePreview()"> <span>White</span></label>
+                        <label class="color-option"><input type="checkbox" value="Silver" onchange="updatePreview()"> <span>Silver</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+    <label>Upload Product Images</label>
+    <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImageUpload(this)">
+    <small style="color: #888;">Tip: Select 2-3 high-quality photos.</small>
 </div>
-<header>
-  <span>Admin Page</span>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
 
-<section class="section">
-  <h2>Add Product</h2>
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea id="description" placeholder="Describe the luxury details..." rows="4" required></textarea>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Publish to Shop</button>
+        </form>
 
-  <!-- MESSAGE CONTAINER -->
-  <div id="message"></div>
+        <div class="preview-container">
+            <p class="preview-label">Live Shop Preview</p>
+            <div class="preview-card" id="live-preview">
+                <div class="preview-img-box">
+                    <span id="preview-badge" class="badge-tag" style="display:none;">NEW</span>
+                    <img id="preview-img" src="https://via.placeholder.com/300x400?text=HotshionHub" alt="Preview">
+                </div>
+                <div class="preview-info">
+                    <span id="preview-category-tag" class="preview-meta">CATEGORY • GENDER</span>
+                    <h3 id="preview-name">Product Name</h3>
+                    <p id="preview-price">₦0</p>
+                    <div id="preview-colors" class="color-dots"></div>
+                </div>
+            </div>
+        </div>
 
-  <form id="productForm">
-    <input type="text" id="name" placeholder="Product Name" required>
-    <input type="number" id="price" placeholder="Price" required>
-    <textarea id="description" placeholder="Product Description" required></textarea>
-
-    <label for="images">Product Images (multiple)</label>
-    <input type="file" id="images" multiple accept="image/*">
-
-    <label>Available Colors</label>
-    <div id="colorsContainer">
-      <label><input type="checkbox" value="Black"> Black</label>
-      <label><input type="checkbox" value="Brown"> Brown</label>
-      <label><input type="checkbox" value="Beige"> Beige</label>
-      <label><input type="checkbox" value="White"> White</label>
-      <label><input type="checkbox" value="Red"> Red</label>
     </div>
-
-    <label for="category">Category</label>
-    <select id="category" required>
-      <option value="bags">Bags</option>
-      <option value="shoes">Shoes</option>
-      <option value="watches">Watches</option>
-      <option value="clothes">Clothes</option>
-      <option value="accessories">Accessories</option>
-    </select>
-
-    <label for="gender">Gender</label>
-    <select id="gender" required>
-      <option value="men">Men</option>
-      <option value="women">Women</option>
-      <option value="unisex">Unisex</option>
-    </select>
-
-    <label for="badge">Badge</label>
-    <select id="badge">
-      <option value="">None</option>
-      <option value="NEW">NEW</option>
-      <option value="HOT">HOT</option>
-    </select>
-
-    <button type="submit">Add Product</button>
-  </form>
 </section>
 
-<section class="section">
-  <h2>Existing Products</h2>
-  <div id="existingProducts"></div>
-</section>
+    <section class="section">
+        <h2>Current Inventory</h2>
+        <div id="existingProducts">
+            </div>
+    </section>
 
-<!-- ADMIN JS -->
-<script src="admin.js"></script>
-
+    <script src="admin.js"></script>
 </body>
 </html>
