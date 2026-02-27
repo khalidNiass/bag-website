@@ -134,3 +134,27 @@
 <script src="shop.js"></script>
 </body>
 </html>
+
+
+
+
+// =======================
+// RENDER PRODUCTS
+// =======================
+function renderProducts() {
+  if (!container) return;
+  container.innerHTML = '';
+
+ const filtered = products.filter(product => {
+    // Make both strings lowercase to ensure they match regardless of how you typed them in the Sheet
+    const matchesSearch = !searchQuery || product.name.toLowerCase().includes(searchQuery);
+    const matchesCat = selectedCategory === 'all' || product.category.toLowerCase() === selectedCategory.toLowerCase();
+    
+    // Check if the product gender (lowercase) is in our selected list
+    const matchesGender = selectedGenders.length === 0 || selectedGenders.includes(product.gender.toLowerCase());
+    
+    // Check if the product badge (uppercase) is in our selected list
+    const matchesBadge = selectedBadges.length === 0 || selectedBadges.includes(product.badge.toUpperCase());
+    
+    return matchesSearch && matchesCat && matchesGender && matchesBadge;
+});

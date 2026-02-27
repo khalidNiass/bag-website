@@ -318,9 +318,9 @@
     font-weight: bold;
     text-transform: uppercase;
 }
-.status-pill.pending { background: #f1c40f; color: #000; }
-.status-pill.shipped { background: #2ecc71; color: #fff; }
-
+.status-pill.pending { background: #f39c12; color: white; }
+.status-pill.shipped { background: #2ecc71; color: white; }
+.status-pill.paid { background: #3498db; color: white; }
 /* Tablet & Mobile Adjustment */
 @media (max-width: 992px) {
     .admin-main-grid {

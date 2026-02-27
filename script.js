@@ -34,7 +34,7 @@ let products = [];
 
 async function fetchProducts() {
     const loaderText = document.getElementById("loader-text");
-
+    
     try {
         if (loaderText) loaderText.innerText = "Accessing Vault...";
 
@@ -42,26 +42,32 @@ async function fetchProducts() {
         if (!res.ok) throw new Error("Server not responding");
 
         const data = await res.json();
-products = data.products || []; // Extract only the products array
+        console.log("DATABASE CHECK:", data); // Check your console (F12) for this!
+
+        // IMPORTANT: Let's be flexible with the data structure
+        if (data.products) {
+            products = data.products;
+        } else if (Array.isArray(data)) {
+            products = data;
+        } else {
+            products = [];
+        }
         
         renderFeaturedProducts();
-
         await waitForImages();
 
         // Hide Loader
-        if (typeof window.hideMyLoader === "function") {
-            window.hideMyLoader();
-        }
+        const loader = document.getElementById('loader-wrapper');
+        if (loader) loader.style.display = 'none';
+        if (typeof window.hideMyLoader === "function") window.hideMyLoader();
 
     } catch (err) {
         console.error("FETCH ERROR:", err);
-        if (typeof window.showLoaderError === "function") {
-            window.showLoaderError("Connection Lost. Retrying...");
-        }
+        if (loaderText) loaderText.innerText = "Connection Lost. Retrying...";
         setTimeout(fetchProducts, 5000);
     }
-}
-
+} 
+// =========================
 function renderFeaturedProducts() {
     if (!featuredContainer) return;
     featuredContainer.innerHTML = '';
@@ -70,9 +76,11 @@ function renderFeaturedProducts() {
     const featured = [...products].sort(() => 0.5 - Math.random()).slice(0, 4);
 
     featured.forEach(product => {
+        // MOVE THIS LINE HERE (Inside the loop)
+        const formattedPrice = product.price ? Number(product.price).toLocaleString() : "0";
+
         const badgeHTML = product.badge ? `<span class="badge">${product.badge}</span>` : '';
         
-        // Fix: Handle images whether they are strings or arrays
         let images = product.images;
         if (typeof images === 'string') {
             images = images.split('|');
@@ -86,7 +94,7 @@ function renderFeaturedProducts() {
                     <img src="${displayImg}" alt="${product.name}">
                 </div>
                 <h3>${product.name}</h3>
-                <p>₦${Number(product.price).toLocaleString()}</p>
+                <p>₦${formattedPrice}</p>
                 <button class="view-btn" onclick="goToDetails('${product.id}')">View Piece</button>
             </div>`;
     });

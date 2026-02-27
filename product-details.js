@@ -49,11 +49,15 @@ async function loadProductDetails() {
         
         const data = await res.json();
         
-        // FIXED: Look inside data.products instead of just 'data'
-        const productsList = data.products || [];
-        currentProduct = productsList.find(p => String(p.id) === String(productId));
+        // FIX 1: Support both {products: []} and raw [] formats
+        const productsList = data.products || data;
+
+        // FIX 2: Ensure we compare Strings to Strings (prevents "Not Found" error)
+        currentProduct = productsList.find(p => String(p.id).trim() === String(productId).trim());
 
         if (!currentProduct) {
+            console.error("ID searched for:", productId);
+            console.log("Available products:", productsList);
             alert("Product not found in our collection.");
             window.location.href = 'shop.html';
             return;

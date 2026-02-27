@@ -71,21 +71,44 @@ function renderOrders(orders) {
 // =============================================
 // 4. CORE DATA SYNC
 // =============================================
-
 async function syncInventory() {
     try {
+        console.log("Admin: Fetching from", API_URL); // Debugging log
         const res = await fetch(API_URL);
         const data = await res.json();
-        
-        allProducts = data.products || [];
-        const allOrders = data.orders || []; 
+        console.log("Admin: Data Received", data); // Check your F12 console for this!
 
-        if (document.getElementById('existingProducts')) renderProducts();
-        if (document.getElementById('admin-orders-list')) renderOrders(allOrders);
+        // Handle both object {products:[]} and direct array [] formats
+        const rawProducts = data.products || (Array.isArray(data) ? data : []);
+        const rawOrders = data.orders || [];
 
-        updateStats(allOrders);   
+        // 1. Process Products
+        allProducts = rawProducts.map(p => ({
+            ...p,
+            id: String(p.id),
+            images: typeof p.images === 'string' ? p.images.split('|') : (Array.isArray(p.images) ? p.images : [])
+        }));
+
+        // 2. Render UI Components
+        const productContainer = document.getElementById('existingProducts');
+        const orderContainer = document.getElementById('admin-orders-list');
+
+        if (productContainer) {
+            renderProducts();
+        } else {
+            console.warn("Missing HTML element: #existingProducts");
+        }
+
+        if (orderContainer) {
+            renderOrders(rawOrders);
+        } else {
+            console.warn("Missing HTML element: #admin-orders-list");
+        }
+
+        updateStats(rawOrders);   
     } catch (err) {
-        console.error("Sync Error:", err);
+        console.error("Admin Sync Error:", err);
+        showNotification("Failed to sync data. Is the server running?", "error");
     }
 }
 
