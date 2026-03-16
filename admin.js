@@ -1,9 +1,16 @@
 // =============================================
 // 1. CONFIGURATION & STATE
 // =============================================
-const API_URL = "http://localhost:3000/api/products";
+const API_BASE =
+    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+    location.port === "5500"
+        ? "http://localhost:3000"
+        : "";
+const API_URL = `${API_BASE}/api/products`;
 let allProducts = [];
 let editingProductId = null;
+let editingProduct = null;
+let uploadedImages = [];
 const BLANK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 // =============================================
@@ -17,6 +24,98 @@ function showNotification(text, type = "success") {
     msgDiv.style.backgroundColor = type === "success" ? "#121212" : "#e74c3c";
     msgDiv.style.color = "#c5a059";
     setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
+}
+
+async function isLoggedIn() {
+    try {
+        const res = await fetch("/api/me", { credentials: "include" });
+        const data = await res.json();
+        return !!data.admin;
+    } catch {
+        return false;
+    }
+}
+
+function logout() {
+    fetch("/api/logout", { method: "POST", credentials: "include" })
+        .finally(() => {
+            window.location.href = "admin-login.html";
+        });
+}
+
+async function requireAuth() {
+    const isLoginPage = document.body.classList.contains("admin-login");
+    if (isLoginPage) return;
+    const ok = await isLoggedIn();
+    if (!ok) window.location.href = "admin-login.html";
+}
+
+function getSelectedColors() {
+    const colorBoxes = document.querySelectorAll('#colorsContainer input[type="checkbox"]');
+    return Array.from(colorBoxes).filter(c => c.checked).map(c => c.value);
+}
+
+function updatePreview() {
+    const nameEl = document.getElementById("preview-name");
+    const priceEl = document.getElementById("preview-price");
+    const categoryTag = document.getElementById("preview-category-tag");
+    const badgeEl = document.getElementById("preview-badge");
+    const imgEl = document.getElementById("preview-img");
+    const colorsWrap = document.getElementById("preview-colors");
+
+    if (!nameEl || !priceEl || !categoryTag || !badgeEl || !imgEl || !colorsWrap) return;
+
+    const name = document.getElementById("name")?.value || "Product Name";
+    const price = Number(document.getElementById("price")?.value || 0);
+    const category = document.getElementById("category")?.value || "CATEGORY";
+    const gender = document.getElementById("gender")?.value || "GENDER";
+    const badge = document.getElementById("badge")?.value || "";
+    const colors = getSelectedColors();
+
+    nameEl.innerText = name;
+    priceEl.innerText = `₦${price.toLocaleString()}`;
+    categoryTag.innerText = `${category.toUpperCase()} • ${gender.toUpperCase()}`;
+
+    if (badge) {
+        badgeEl.style.display = "inline-block";
+        badgeEl.innerText = badge;
+    } else {
+        badgeEl.style.display = "none";
+    }
+
+    const imgSrc =
+        uploadedImages[0] ||
+        (editingProduct?.images && editingProduct.images[0]) ||
+        BLANK_IMG;
+    imgEl.src = imgSrc;
+
+    colorsWrap.innerHTML = colors.map(c => {
+        return `<span class="dot" title="${c}" style="background:${c.toLowerCase()};"></span>`;
+    }).join("");
+}
+
+function handleImageUpload(input) {
+    const files = Array.from(input.files || []);
+    if (files.length === 0) {
+        uploadedImages = [];
+        updatePreview();
+        return;
+    }
+
+    uploadedImages = [];
+    const readers = files.map(file => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(file);
+        });
+    });
+
+    Promise.all(readers).then(results => {
+        uploadedImages = results.filter(Boolean);
+        updatePreview();
+    });
 }
 
 // =============================================
@@ -183,10 +282,24 @@ function editProduct(id) {
     }
 
     editingProductId = p.id;
+    editingProduct = p;
     document.getElementById('name').value = p.name;
     document.getElementById('price').value = p.price;
     document.getElementById('category').value = p.category;
+    const genderEl = document.getElementById('gender');
+    if (genderEl && p.gender) genderEl.value = p.gender;
+    const badgeEl = document.getElementById('badge');
+    if (badgeEl) badgeEl.value = p.badge || "";
     document.getElementById('description').value = p.description;
+    const colors = p.colors
+        ? (Array.isArray(p.colors) ? p.colors : String(p.colors).split(","))
+        : [];
+    const colorBoxes = document.querySelectorAll('#colorsContainer input[type="checkbox"]');
+    colorBoxes.forEach(cb => {
+        cb.checked = colors.map(c => c.trim()).includes(cb.value);
+    });
+    uploadedImages = [];
+    updatePreview();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -194,6 +307,50 @@ function editProduct(id) {
 // 6. INITIALIZATION
 // =============================================
 document.addEventListener('DOMContentLoaded', async () => {
+    requireAuth();
+
+    const form = document.getElementById("productForm");
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const payload = {
+                    action: editingProductId ? "edit" : "add",
+                    id: editingProductId || undefined,
+                    name: document.getElementById("name")?.value?.trim(),
+                    price: Number(document.getElementById("price")?.value || 0),
+                    category: document.getElementById("category")?.value,
+                    gender: document.getElementById("gender")?.value,
+                    badge: document.getElementById("badge")?.value || "",
+                    colors: getSelectedColors().join(","),
+                    images:
+                        (uploadedImages.length
+                            ? uploadedImages
+                            : (editingProduct?.images || [])
+                        ).join("|"),
+                    description: document.getElementById("description")?.value?.trim(),
+                };
+
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!res.ok) throw new Error("Save failed");
+                showNotification(editingProductId ? "Product updated" : "Product added", "success");
+                editingProductId = null;
+                editingProduct = null;
+                uploadedImages = [];
+                form.reset();
+                updatePreview();
+                syncInventory();
+            } catch (err) {
+                showNotification("Save failed. Check server.", "error");
+            }
+        });
+    }
+
     await syncInventory();
     
     const loader = document.getElementById('loader-wrapper');

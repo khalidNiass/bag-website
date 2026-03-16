@@ -1,5 +1,6 @@
 window.addEventListener('scroll', function() {
     const header = document.querySelector('header');
+    if (!header) return;
     if (window.scrollY > 50) {
         header.classList.add('scrolled');
     } else {
@@ -10,18 +11,25 @@ window.addEventListener('scroll', function() {
 // =============================================
 // CONFIGURATION
 // =============================================
-const API_URL = "http://localhost:3000/api/products";
+const API_BASE =
+    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+    location.port === "5500"
+        ? "http://localhost:3000"
+        : "";
+const API_URL = `${API_BASE}/api/products`;
 let currentProduct = null;
 
 // =============================================
 // UI & NAVIGATION LOGIC
 // =============================================
 function toggleSidebar() {
-    document.getElementById("mobileSidebar").classList.add("active");
+    const sidebar = document.getElementById("mobileSidebar");
+    if (sidebar) sidebar.classList.add("active");
 }
 
 function closeSidebar() {
-    document.getElementById("mobileSidebar").classList.remove("active");
+    const sidebar = document.getElementById("mobileSidebar");
+    if (sidebar) sidebar.classList.remove("active");
 }
 
 function changeQty(amount) {
@@ -145,11 +153,12 @@ if (checkoutForm) {
             phone: document.getElementById('custPhone').value,
             address: document.getElementById('custAddress').value,
             productName: `${currentProduct.name} (${selectedColor}) x${selectedQty}`,
+            productImage: (currentProduct.images && currentProduct.images.length > 0) ? currentProduct.images[0] : "",
             amount: currentProduct.price * selectedQty
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/pay', {
+            const response = await fetch(`${API_BASE}/api/pay`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)

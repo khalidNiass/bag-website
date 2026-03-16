@@ -28,7 +28,12 @@ function closeSidebar() {
 // =========================
 // FETCH & RENDER FEATURED
 // =========================
-const API_URL = "http://localhost:3000/api/products";
+const API_BASE =
+    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+    location.port === "5500"
+        ? "http://localhost:3000"
+        : "";
+const API_URL = `${API_BASE}/api/products`;
 const featuredContainer = document.getElementById('featuredProducts');
 let products = [];
 
@@ -128,7 +133,7 @@ if (newsletterForm) {
         
         btn.innerText = "...";
         try {
-            await fetch("http://localhost:3000/api/subscribe", {
+            await fetch(`${API_BASE}/api/subscribe`, {
                 method: "POST",
                 body: JSON.stringify({ email }),
                 headers: { "Content-Type": "application/json" }

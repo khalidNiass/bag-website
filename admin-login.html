@@ -5,84 +5,35 @@
   <title>Admin Login | HotshionHub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      background: linear-gradient(135deg, #f39c12, #e67e22);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Montserrat, sans-serif;
-    }
-
-    .login-box {
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 350px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #f39c12;
-      border: none;
-      color: white;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #e67e22;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="admin.css">
 </head>
 
-<body>
-<div id="loader-wrapper">
-    <div class="loader-container">
-        <div class="loader-ring"></div>
-        <div class="loader-pulse"></div>
+<body class="admin-body admin-login">
+<div class="page-loader" aria-hidden="true"></div>
+<div class="login-shell login-shell--compact">
+  <div class="login-box">
+    <div class="login-mark">
+      <span class="login-dot"></span>
+      <span class="login-brand">HOTSHIONHUB</span>
+      <span class="login-divider">•</span>
+      <span class="login-mode">Admin</span>
     </div>
-    <p id="loader-text">Style is loading</p>
+    <h2>Secure Access</h2>
+    <p class="login-sub">Sign in to manage products and orders.</p>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Admin username" autocomplete="username">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+
+    <button onclick="login()">Enter Dashboard</button>
+
+    <p class="error" id="error"></p>
+  </div>
 </div>
-<div class="login-box">
-  <h2>Admin Login</h2>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-
-  <p class="error" id="error"></p>
-</div>
-
-<script src="admin-login.js">
-</script>
-
+<script src="admin-login.js"></script>
+  <script src="loasding.js"></script>
 </body>
 </html>

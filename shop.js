@@ -1,7 +1,12 @@
 // =========================
 // 1. GLOBAL STATE & CONFIG
 // =========================
-const API_URL = "http://localhost:3000/api/products"; 
+const API_BASE =
+    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+    location.port === "5500"
+        ? "http://localhost:3000"
+        : "";
+const API_URL = `${API_BASE}/api/products`; 
 let products = [];
 let container; // Declared once here
 let selectedCategory = 'all';
