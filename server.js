@@ -81,6 +81,10 @@ app.get("/orders.html", requireAdmin, (req, res) => {
   res.sendFile(__dirname + "/orders.html");
 });
 
+app.get("/admin-login.html", (req, res) => {
+  res.sendFile(__dirname + "/admin-login.html");
+});
+
 app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body || {};
