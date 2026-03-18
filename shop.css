@@ -8,9 +8,9 @@
 /* ============================================= */
 
 .breadcrumbs {
-    background-color: #fcfcfc; /* Very light grey background */
+    background-color: var(--bg);
     padding: 20px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--stroke);
     margin-bottom: 40px;
 }
 
@@ -25,7 +25,7 @@
 
 .breadcrumbs a {
     text-decoration: none;
-    color: #888;
+    color: var(--ink-soft);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -33,7 +33,7 @@
 }
 
 .breadcrumbs a:hover {
-    color: #000; /* Darker on hover */
+    color: var(--accent);
 }
 
 .breadcrumbs span {
@@ -42,7 +42,7 @@
 }
 
 #current-breadcrumb {
-    color: #222; /* Darker color for the current page */
+    color: var(--ink);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -67,7 +67,7 @@
     width: 100%;
     padding: 15px 15px 15px 45px;
     border: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--stroke);
     font-family: inherit;
     font-size: 1rem;
     outline: none;
@@ -79,7 +79,7 @@
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-muted);
+    color: var(--ink-soft);
 }
 
 /* 3. Category & Filter Buttons (Modern Minimalist) */
@@ -92,9 +92,9 @@
 }
 
 .filter-btn {
-    background: #fff;
+    background: var(--card);
     color: var(--dark);
-    border: 1px solid var(--border);
+    border: 1px solid var(--stroke);
     padding: 10px 25px;
     cursor: pointer;
     font-size: 0.75rem;
@@ -105,9 +105,9 @@
 }
 
 .filter-btn:hover, .filter-btn.active {
-    background: var(--dark);
-    color: #fff;
-    border-color: var(--dark);
+    background: var(--accent-2);
+    color: #f6f0e6;
+    border-color: var(--accent-2);
 }
 
 /* 4. Dropdowns (Gender & Status) */
@@ -119,13 +119,13 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background: #fff;
+    background: var(--card);
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
     display: none; /* Controlled by Hover or JS */
     z-index: 100;
     min-width: 200px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--stroke);
 }
 
 .filter-dropdown:hover .dropdown-content {
@@ -138,7 +138,7 @@
     align-items: center;
     gap: 12px;
     font-size: 0.8rem;
-    color: var(--text);
+    color: var(--ink);
     margin-bottom: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -161,20 +161,21 @@
     margin-top: 15px;
     width: 100%;
     padding: 15px;
-    background: none;
-    border: 1px solid var(--dark);
-    color: var(--dark);
+    background: var(--accent-2);
+    border: none;
+    color: #f6f0e6;
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.7rem;
     letter-spacing: 2px;
     cursor: pointer;
     transition: 0.3s;
+    border-radius: 10px;
 }
 
 .product .view-btn:hover {
-    background: var(--dark);
-    color: #fff;
+    background: var(--accent);
+    color: #111;
 }
 
 /* 6. Responsive Fixes */

@@ -11,20 +11,33 @@ const paystack = require("paystack-api")(
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+const allowedOrigins = new Set([
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+]);
+
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); // non-browser or same-origin
+    if (allowedOrigins.has(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 const PORT = process.env.PORT || 3000;
 const GOOGLE_WEB_APP_URL =
   process.env.GOOGLE_WEB_APP_URL ||
-  "https://script.google.com/macros/s/AKfycbzIGGxWzc4e0lNtAU0Mu6JNmOnKP6M7pwn3h-OHuCE_6JOxd31URNSDQHOsprZAoZB7mw/exec";
+  "https://script.google.com/macros/s/AKfycbwuC0oSKbBxeZCS26QKgOjkYcJUuEio6NK7cl5OW4APB5yLVW73aHb0N9BOQb0lhW-y7Q/exec";
 
 const PAYSTACK_SECRET_KEY =
   process.env.PAYSTACK_SECRET_KEY ||
@@ -153,7 +166,9 @@ app.get("/api/products", async (req, res) => {
 // This handles ADD, DELETE, and UPDATE actions from the Admin Panel
 app.post("/api/products", async (req, res) => {
   try {
+    console.log("Admin Product Action:", req.body && req.body.action, req.body && req.body.id);
     const result = await callAppsScript(req.body); // Send the whole body (it contains the action)
+    console.log("Admin Product Result:", result);
     res.json(result);
   } catch (err) {
     console.error("Admin POST Error:", err);

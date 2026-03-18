@@ -16,8 +16,9 @@
     width: 100%;
     height: 600px;
     object-fit: cover;
-    border: 1px solid var(--border);
-    background: #f9f9f9;
+    border: 1px solid var(--stroke);
+    background: #f9f6ef;
+    border-radius: 16px;
 }
 
 .thumbnail-grid {
@@ -31,8 +32,9 @@
     height: 80px;
     object-fit: cover;
     cursor: pointer;
-    border: 1px solid var(--border);
+    border: 1px solid var(--stroke);
     transition: 0.3s;
+    border-radius: 10px;
 }
 
 .thumbnail-grid img:hover {
@@ -51,11 +53,12 @@
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-bottom: 10px;
+    font-family: "Space Grotesk", sans-serif;
 }
 
 .price {
     font-size: 1.8rem;
-    color: var(--primary);
+    color: var(--accent);
     font-weight: 700;
     margin-bottom: 30px;
 }
@@ -69,7 +72,7 @@
 /* Options & Selectors */
 .options {
     margin-bottom: 40px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--stroke);
     padding-top: 30px;
 }
 
@@ -84,16 +87,18 @@
 #modalColor {
     width: 100%;
     padding: 12px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--stroke);
     margin-bottom: 25px;
     outline: none;
+    border-radius: 10px;
 }
 
 .qty-selector {
     display: flex;
     align-items: center;
-    border: 1px solid var(--border);
+    border: 1px solid var(--stroke);
     width: fit-content;
+    border-radius: 10px;
 }
 
 .qty-selector button {
@@ -113,8 +118,8 @@
 }
 
 .buy-now-btn {
-    background: var(--dark);
-    color: #fff;
+    background: var(--accent-2);
+    color: #f6f0e6;
     border: none;
     padding: 20px;
     width: 100%;
@@ -123,10 +128,11 @@
     font-weight: 700;
     cursor: pointer;
     transition: 0.4s;
+    border-radius: 12px;
 }
 
 .buy-now-btn:hover {
-    background: var(--primary);
+    background: var(--accent);
 }
 .checkout-overlay {
     position: fixed;
@@ -142,12 +148,14 @@
 .checkout-overlay.active { display: flex; }
 
 .checkout-content {
-    background: #fff;
+    background: var(--card);
     padding: 40px;
     width: 90%;
     max-width: 500px;
     position: relative;
-    border-radius: 4px;
+    border-radius: 16px;
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
 }
 
 .close-checkout {
@@ -168,29 +176,32 @@
     width: 100%;
     padding: 15px;
     margin-top: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--stroke);
     font-family: inherit;
+    border-radius: 10px;
 }
 
 .order-summary {
     margin-top: 20px;
     padding: 20px;
-    background: #f9f9f9;
+    background: #f7f2e8;
     display: flex;
     justify-content: space-between;
     font-weight: bold;
+    border-radius: 12px;
 }
 
 #finalPayBtn {
     width: 100%;
     padding: 20px;
-    background: var(--dark);
+    background: var(--accent-2);
     color: white;
     border: none;
     margin-top: 20px;
     text-transform: uppercase;
     font-weight: bold;
     cursor: pointer;
+    border-radius: 12px;
 }
 
 /* ============================================= */
@@ -198,9 +209,9 @@
 /* ============================================= */
 
 .breadcrumbs {
-    background-color: #fcfcfc; /* Very light grey background */
+    background-color: var(--bg);
     padding: 20px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--stroke);
     margin-bottom: 40px;
 }
 
@@ -215,7 +226,7 @@
 
 .breadcrumbs a {
     text-decoration: none;
-    color: #888;
+    color: var(--ink-soft);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -223,7 +234,7 @@
 }
 
 .breadcrumbs a:hover {
-    color: #000; /* Darker on hover */
+    color: var(--accent);
 }
 
 .breadcrumbs span {
@@ -232,7 +243,7 @@
 }
 
 #current-breadcrumb {
-    color: #222; /* Darker color for the current page */
+    color: var(--ink);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;

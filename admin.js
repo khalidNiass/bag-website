@@ -4,7 +4,7 @@
 const API_BASE =
     (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
     location.port === "5500"
-        ? "http://localhost:3000"
+        ? `http://${location.hostname}:3000`
         : "";
 const API_URL = `${API_BASE}/api/products`;
 let allProducts = [];
@@ -28,7 +28,7 @@ function showNotification(text, type = "success") {
 
 async function isLoggedIn() {
     try {
-        const res = await fetch("/api/me", { credentials: "include" });
+        const res = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
         const data = await res.json();
         return !!data.admin;
     } catch {
@@ -37,10 +37,39 @@ async function isLoggedIn() {
 }
 
 function logout() {
-    fetch("/api/logout", { method: "POST", credentials: "include" })
+    fetch(`${API_BASE}/api/logout`, { method: "POST", credentials: "include" })
         .finally(() => {
             window.location.href = "admin-login.html";
         });
+}
+
+function openInventoryModal() {
+    const modal = document.getElementById("inventory-edit-modal");
+    if (!modal) return;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    modal.removeAttribute("inert");
+    document.body.classList.add("modal-open");
+}
+
+function closeInventoryModal({ reset = false } = {}) {
+    const modal = document.getElementById("inventory-edit-modal");
+    if (!modal) return;
+    if (document.activeElement && modal.contains(document.activeElement)) {
+        document.activeElement.blur();
+    }
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    modal.setAttribute("inert", "");
+    document.body.classList.remove("modal-open");
+    if (reset) {
+        const form = document.getElementById("productForm");
+        if (form) form.reset();
+        editingProductId = null;
+        editingProduct = null;
+        uploadedImages = [];
+        updatePreview();
+    }
 }
 
 async function requireAuth() {
@@ -126,7 +155,7 @@ function renderProducts() {
     const container = document.getElementById('existingProducts');
     if (!container) return;
     
-    container.innerHTML = allProducts.map(p => `
+    container.innerHTML = allProducts.map((p, index) => `
         <div class="product-admin" style="display:flex; align-items:center; gap:20px; background:white; padding:15px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
             <img src="${(p.images && p.images[0]) ? p.images[0] : BLANK_IMG}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
             <div style="flex:1">
@@ -134,7 +163,7 @@ function renderProducts() {
                 <p style="color:#c5a059; margin:0; font-weight:bold;">₦${Number(p.price).toLocaleString()}</p>
             </div>
             <div>
-                <button onclick="editProduct('${p.id}')" class="action-btn" style="background:#121212; color:#c5a059; border:1px solid #c5a059; padding:8px 12px; cursor:pointer;"><i class="fas fa-edit"></i></button>
+                <button onclick="editProductByIndex(${index})" class="action-btn" style="background:#121212; color:#c5a059; border:1px solid #c5a059; padding:8px 12px; cursor:pointer;"><i class="fas fa-edit"></i></button>
                 <button onclick="deleteProduct('${p.id}')" class="action-btn" style="background:#f4f4f4; border:1px solid #ddd; padding:8px 12px; cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>
         </div>
@@ -272,8 +301,14 @@ async function deleteProduct(id) {
     } catch (err) { showNotification("Failed to delete product", "error"); }
 }
 
-function editProduct(id) {
-    const p = allProducts.find(item => item.id === id);
+function editProductByIndex(index) {
+    const p = allProducts[index];
+    if (!p) return;
+    editProduct(p.id, p);
+}
+
+function editProduct(id, productOverride) {
+    const p = productOverride || allProducts.find(item => item.id === id);
     if (!p) return;
     
     if (!document.getElementById('productForm')) {
@@ -281,7 +316,8 @@ function editProduct(id) {
         return;
     }
 
-    editingProductId = p.id;
+    openInventoryModal();
+    editingProductId = p.id || null;
     editingProduct = p;
     document.getElementById('name').value = p.name;
     document.getElementById('price').value = p.price;
@@ -311,12 +347,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const form = document.getElementById("productForm");
     if (form) {
+        const modal = document.getElementById("inventory-edit-modal");
+        if (modal) {
+            modal.addEventListener("click", (event) => {
+                const target = event.target;
+                if (target && target.hasAttribute("data-modal-close")) {
+                    closeInventoryModal();
+                }
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") closeInventoryModal();
+            });
+        }
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             try {
+                if (!editingProductId && editingProduct) {
+                    showNotification("This product is missing an ID. Please add an ID in your sheet before editing.", "error");
+                    return;
+                }
+                const normalizedId =
+                    editingProductId !== null && editingProductId !== undefined && `${editingProductId}` !== ""
+                        ? (Number.isNaN(Number(editingProductId)) ? editingProductId : Number(editingProductId))
+                        : undefined;
+
                 const payload = {
                     action: editingProductId ? "edit" : "add",
-                    id: editingProductId || undefined,
+                    id: normalizedId,
                     name: document.getElementById("name")?.value?.trim(),
                     price: Number(document.getElementById("price")?.value || 0),
                     category: document.getElementById("category")?.value,
@@ -331,13 +389,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                     description: document.getElementById("description")?.value?.trim(),
                 };
 
+                console.log("Admin: Saving product", payload);
                 const res = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 });
 
-                if (!res.ok) throw new Error("Save failed");
+                const data = await res.json().catch(() => null);
+                if (!res.ok) {
+                    console.error("Admin Save Error:", res.status, data);
+                    throw new Error("Save failed");
+                }
+                if (data && (data.error || data.ok === false || data.success === false)) {
+                    console.error("Admin Save Error:", data);
+                    showNotification(data.error || "Save failed. Check server.", "error");
+                    return;
+                }
                 showNotification(editingProductId ? "Product updated" : "Product added", "success");
                 editingProductId = null;
                 editingProduct = null;
@@ -345,6 +413,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 form.reset();
                 updatePreview();
                 syncInventory();
+                if (document.getElementById("inventory-edit-modal")) {
+                    closeInventoryModal({ reset: true });
+                }
             } catch (err) {
                 showNotification("Save failed. Check server.", "error");
             }

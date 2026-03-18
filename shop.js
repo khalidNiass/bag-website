@@ -14,6 +14,34 @@ let selectedGenders = [];
 let selectedBadges = [];
 let searchQuery = '';
 
+function applyFiltersFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category");
+    const gender = params.get("gender");
+    const badge = params.get("badge");
+
+    if (category) selectedCategory = category;
+    if (gender) selectedGenders = [gender.toLowerCase()];
+    if (badge) selectedBadges = [badge.toUpperCase()];
+
+    // Sync UI
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        if (b.dataset.category) {
+            b.classList.toggle('active', b.dataset.category === selectedCategory);
+        }
+    });
+
+    const genderCheckboxes = document.querySelectorAll('.dropdown-content input[value="men"], .dropdown-content input[value="women"]');
+    genderCheckboxes.forEach(cb => {
+        cb.checked = selectedGenders.includes(cb.value.toLowerCase());
+    });
+
+    const statusCheckboxes = document.querySelectorAll('.dropdown-content input[value="NEW"], .dropdown-content input[value="HOT"]');
+    statusCheckboxes.forEach(cb => {
+        cb.checked = selectedBadges.includes(cb.value.toUpperCase());
+    });
+}
+
 // =========================
 // 2. UI NAVIGATION (Scroll & Sidebar)
 // =========================
@@ -145,6 +173,8 @@ function goToDetails(productId) {
 // 5. EVENT LISTENERS
 // =========================
 document.addEventListener('DOMContentLoaded', () => {
+    applyFiltersFromUrl();
+
     // Filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
         if (btn.dataset.category) {

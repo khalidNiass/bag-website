@@ -7,12 +7,13 @@ function login() {
   const API_BASE =
     (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
     location.port === "5500"
-      ? "http://localhost:3000"
+      ? `http://${location.hostname}:3000`
       : "";
 
   fetch(`${API_BASE}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ username: u, password: p }),
   })
     .then(async (res) => {

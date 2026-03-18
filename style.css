@@ -1,13 +1,25 @@
 /* ================================================================
    DESIGN SYSTEM & RESET
 ================================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
+
 :root {
-    --primary: #c5a059;       /* Luxury Gold */
-    --dark: #121212;          /* Deep Black */
+    --bg: #f5f1ea;
+    --bg-2: #efe8dd;
+    --ink: #121212;
+    --ink-soft: #4b4b4b;
+    --card: #ffffff;
+    --stroke: #e8e0d2;
+    --accent: #c39a5b;
+    --accent-2: #1b1b1b;
+    --shadow: 0 24px 60px rgba(22, 22, 22, 0.12);
+
+    --primary: var(--accent);
+    --dark: var(--accent-2);
     --light: #fcfcfc;
-    --text: #1a1a1a;
-    --text-muted: #757575;
-    --border: #eeeeee;
+    --text: var(--ink);
+    --text-muted: var(--ink-soft);
+    --border: var(--stroke);
     --transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -24,8 +36,11 @@ html, body {
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #fff;
+    font-family: "Sora", sans-serif;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(195,154,91,0.18), transparent 40%),
+        radial-gradient(circle at 90% 0%, rgba(18,18,18,0.08), transparent 45%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
     color: var(--text);
     line-height: 1.7;
 }
@@ -36,7 +51,7 @@ body {
 #loader-wrapper {
     position: fixed;
     inset: 0;
-    background: #ffffff;
+    background: var(--bg);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -60,7 +75,7 @@ body {
     letter-spacing: 5px;
     font-size: 0.7rem;
     font-weight: 700;
-    color: var(--dark);
+    color: var(--ink);
 }
 
 .loader-hidden {
@@ -85,28 +100,31 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
+    padding: 18px 6%;
     transition: all 0.4s ease;
-    background-color: transparent; /* Default state */
+    background: rgba(18, 18, 18, 0.92);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+    backdrop-filter: blur(6px);
 }
 
 /* This class will be added by JavaScript when scrolling */
 header.scrolled {
-    background-color: #ffffff; /* Or your dark theme color */
-    padding: 15px 5%;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: rgba(12, 12, 12, 0.96);
+    padding: 16px 6%;
+    box-shadow: 0 18px 48px rgba(0,0,0,0.28);
 }
 
-/* Adjust text color based on scroll */
-header.scrolled h1, 
-header.scrolled nav a, 
-header.scrolled .menu-btn {
-    color: #000000; 
-}
-
-/* Initial state text color (Make sure this is visible over your Hero image) */
+/* Initial state text color */
 header h1, nav a, .menu-btn {
-    color: #000000; 
+    color: #f7f1e8;
+}
+
+header h1 {
+    font-family: "Space Grotesk", sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    color: var(--accent);
 }
 
 /* Push the content down on other pages so the fixed header doesn't cover text */
@@ -119,14 +137,14 @@ body.inner-page {
     padding-top: 80px; /* Adjust based on your header height */
 }
 body.inner-page header {
-    background-color: #ffffff;
-    color: #000;
+    background: rgba(12, 12, 12, 0.96);
+    color: #f7f1e8;
 }
 
 nav a {
     text-decoration: none;
-    color: var(--text);
-    font-size: 0.75rem;
+    color: #f7f1e8;
+    font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -155,14 +173,14 @@ nav a:hover { color: var(--primary); }
     width: 100%;
     max-width: 350px;
     height: 100vh;
-    background: #ffffff;
+    background: #14120f;
     z-index: 2000;
     transform: translateX(100%);
     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
     padding: 100px 40px;
     display: flex;
     flex-direction: column;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.35);
 }
 
 .mobile-sidebar.active { transform: translateX(0); }
@@ -175,13 +193,14 @@ nav a:hover { color: var(--primary); }
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
+    color: #f7f1e8;
 }
 
 .mobile-sidebar ul { list-style: none; }
 .mobile-sidebar ul li { margin-bottom: 25px; }
 .mobile-sidebar ul li a {
     text-decoration: none;
-    color: var(--dark);
+    color: #f7f1e8;
     font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -195,7 +214,7 @@ nav a:hover { color: var(--primary); }
 ================================================================ */
 .hero {
     height: 80vh;
-    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
+    background: linear-gradient(rgba(10,10,10,0.65), rgba(10,10,10,0.45)), 
                 url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1600') center/cover;
     display: flex;
     flex-direction: column;
@@ -205,15 +224,15 @@ nav a:hover { color: var(--primary); }
     text-align: center;
 }
 
-.hero p { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 10px; }
-.hero h2 { font-size: 3.5rem; font-weight: 300; letter-spacing: 10px; text-transform: uppercase; }
+.hero p { font-size: 0.75rem; letter-spacing: 4px; margin-bottom: 10px; color: rgba(247,241,232,0.8); }
+.hero h2 { font-size: 3.2rem; font-weight: 500; letter-spacing: 8px; text-transform: uppercase; font-family: "Space Grotesk", sans-serif; }
 
 .hero-btn {
     margin-top: 30px;
     display: inline-block;
     padding: 18px 45px;
-    background: white;
-    color: var(--dark);
+    background: var(--accent);
+    color: #111;
     text-decoration: none;
     font-weight: 700;
     letter-spacing: 2px;
@@ -222,13 +241,20 @@ nav a:hover { color: var(--primary); }
     transition: var(--transition);
 }
 
-.hero-btn:hover { background: var(--primary); color: white; }
+.hero-btn:hover { background: #e0b874; color: #111; }
 
 /* ================================================================
    PRODUCT GRID
 ================================================================ */
 .section { padding: 100px 8%; }
-.section h2 { text-align: center; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 60px; }
+.section h2 {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-bottom: 60px;
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--ink);
+}
 
 .products {
     display: grid;
@@ -240,37 +266,44 @@ nav a:hover { color: var(--primary); }
     position: relative;
     text-align: center;
     transition: var(--transition);
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: var(--shadow);
 }
 
 .product img {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     transition: transform 0.6s ease;
+    border-radius: 12px;
 }
 
 .product:hover img { transform: scale(1.03); }
 
 .product .badge {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    background: var(--primary);
-    color: white;
-    padding: 5px 12px;
+    top: 20px;
+    left: 20px;
+    background: var(--accent);
+    color: #111;
+    padding: 6px 12px;
     font-size: 0.6rem;
     font-weight: 700;
     text-transform: uppercase;
     z-index: 10;
+    border-radius: 999px;
 }
 
 .product h3 { font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
 .product p { color: var(--text-muted); margin-bottom: 20px; }
 
 .product button {
-    background: none;
-    border: 1px solid var(--dark);
+    background: var(--accent-2);
+    border: none;
     padding: 12px 25px;
     text-transform: uppercase;
     font-size: 0.7rem;
@@ -278,9 +311,11 @@ nav a:hover { color: var(--primary); }
     letter-spacing: 1px;
     cursor: pointer;
     transition: 0.3s;
+    color: #f6f0e6;
+    border-radius: 10px;
 }
 
-.product button:hover { background: var(--dark); color: white; }
+.product button:hover { background: var(--accent); color: #111; }
 
 /* ================================================================
    CLIENT STORIES (AUTO-SCROLL)
@@ -288,7 +323,7 @@ nav a:hover { color: var(--primary); }
 .testimonial-slider {
     width: 100%;
     overflow: hidden;
-    background: #fafafa;
+    background: rgba(255,255,255,0.6);
     padding: 80px 0;
     position: relative;
 }
@@ -305,10 +340,12 @@ nav a:hover { color: var(--primary); }
     width: 350px;
     margin: 0 20px;
     padding: 40px;
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--card);
+    border: 1px solid var(--stroke);
     text-align: center;
     flex-shrink: 0;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
 }
 
 .testimonial i { color: var(--primary); margin-bottom: 20px; font-size: 1.2rem; }
@@ -322,16 +359,16 @@ nav a:hover { color: var(--primary); }
    NEWSLETTER
 ================================================================ */
 .newsletter {
-    background: #fff;
+    background: rgba(255,255,255,0.85);
     text-align: center;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--stroke);
 }
 
 #newsletterForm {
     display: flex;
     max-width: 500px;
     margin: 40px auto 0;
-    border-bottom: 1px solid var(--dark);
+    border-bottom: 1px solid var(--accent-2);
 }
 
 #newsletterForm input {
@@ -343,20 +380,21 @@ nav a:hover { color: var(--primary); }
 }
 
 #newsletterForm button {
-    background: none;
+    background: var(--accent-2);
     border: none;
     font-weight: 900;
     letter-spacing: 2px;
     cursor: pointer;
     padding: 0 20px;
+    color: #f6f0e6;
 }
 
 /* ================================================================
    FOOTER
 ================================================================ */
 footer {
-    background: var(--dark);
-    color: white;
+    background: #121212;
+    color: #f6f0e6;
     padding: 80px 8% 30px;
 }
 
@@ -369,10 +407,10 @@ footer {
 
 .footer-col h3 { letter-spacing: 3px; margin-bottom: 20px; text-transform: uppercase; }
 .footer-col h4 { color: var(--primary); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 25px; }
-.footer-col p { color: #888; font-size: 0.85rem; }
+.footer-col p { color: rgba(246,240,230,0.75); font-size: 0.85rem; }
 .footer-col ul { list-style: none; }
 .footer-col ul li { margin-bottom: 12px; }
-.footer-col ul li a { color: #888; text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+.footer-col ul li a { color: rgba(246,240,230,0.75); text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
 .footer-col ul li a:hover { color: white; padding-left: 5px; }
 
 .footer-social { margin-top: 20px; display: flex; gap: 15px; }
@@ -380,13 +418,13 @@ footer {
 .footer-social a:hover { color: var(--primary); }
 
 .footer-bottom {
-    border-top: 1px solid #222;
+    border-top: 1px solid rgba(255,255,255,0.08);
     padding-top: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.7rem;
-    color: #555;
+    color: rgba(246,240,230,0.55);
 }
 
 .payment-icons { display: flex; gap: 15px; font-size: 1.4rem; }

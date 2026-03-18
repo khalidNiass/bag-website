@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HotshionHub | Inventory</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin.css">
 </head>
 <body class="admin-body">
     <header>
         <span>HOTSHIONHUB <small>| INVENTORY</small></span>
-        <div>
-            <a href="admin.html" class="logout-btn" style="text-decoration:none; margin-right:10px;"><i class="fas fa-plus"></i> Add New</a>
-            <a href="admin.html" class="logout-btn" style="text-decoration:none;"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        <div class="header-actions">
+            <a href="admin.html" class="icon-btn" title="Add New" aria-label="Add New"><i class="fas fa-plus"></i></a>
+            <a href="admin.html" class="icon-btn" title="Back to Dashboard" aria-label="Back to Dashboard"><i class="fas fa-arrow-left"></i></a>
         </div>
     </header>
+
+    <div id="message"></div>
 
     <section class="section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -24,6 +27,104 @@
         <div id="existingProducts" class="inventory-grid">
             </div>
     </section>
+
+    <div class="inventory-modal" id="inventory-edit-modal" aria-hidden="true">
+        <div class="inventory-modal__backdrop" data-modal-close></div>
+        <div class="inventory-modal__panel" role="dialog" aria-modal="true" aria-labelledby="inventory-edit-title">
+            <div class="inventory-modal__header">
+                <div>
+                    <div class="inventory-modal__eyebrow">Live Inventory</div>
+                    <h2 id="inventory-edit-title">Edit Product</h2>
+                </div>
+                <button class="inventory-modal__close" type="button" data-modal-close aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="inventory-modal__body">
+                <div class="admin-main-grid modal-grid">
+                    <form class="admin-form" id="productForm">
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Product Name</label>
+                                <input type="text" id="name" placeholder="Enter product name" required oninput="updatePreview()">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Price (₦)</label>
+                                <input type="number" id="price" placeholder="45000" required oninput="updatePreview()">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="category" required onchange="updatePreview()">
+                                    <option value="bags">Bags</option>
+                                    <option value="shoes">Shoes</option>
+                                    <option value="watches">Watches</option>
+                                    <option value="clothes">Clothes</option>
+                                    <option value="accessories">Accessories</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select id="gender" required onchange="updatePreview()">
+                                    <option value="men">Men</option>
+                                    <option value="women">Women</option>
+                                    <option value="unisex">Unisex</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Badge</label>
+                                <select id="badge" onchange="updatePreview()">
+                                    <option value="">None</option>
+                                    <option value="NEW">NEW</option>
+                                    <option value="HOT">HOT</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Available Colors</label>
+                                <div id="colorsContainer" class="color-selector-grid">
+                                    <label class="color-option"><input type="checkbox" value="Black" onchange="updatePreview()"> <span>Black</span></label>
+                                    <label class="color-option"><input type="checkbox" value="Brown" onchange="updatePreview()"> <span>Brown</span></label>
+                                    <label class="color-option"><input type="checkbox" value="Gold" onchange="updatePreview()"> <span>Gold</span></label>
+                                    <label class="color-option"><input type="checkbox" value="White" onchange="updatePreview()"> <span>White</span></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Upload Product Images</label>
+                                <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImageUpload(this)">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Description</label>
+                                <textarea id="description" placeholder="Describe the luxury details..." rows="4" required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Save Changes</button>
+                    </form>
+
+                    <div class="preview-container">
+                        <p class="preview-label">Live Shop Preview</p>
+                        <div class="preview-card" id="live-preview">
+                            <div class="preview-img-box">
+                                <span id="preview-badge" class="badge-tag" style="display:none;">NEW</span>
+                                <img id="preview-img" src="https://via.placeholder.com/300x400?text=HotshionHub" alt="Preview">
+                            </div>
+                            <div class="preview-info">
+                                <span id="preview-category-tag" class="preview-meta">CATEGORY • GENDER</span>
+                                <h3 id="preview-name">Product Name</h3>
+                                <p id="preview-price">₦0</p>
+                                <div id="preview-colors" class="color-dots"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="admin.js"></script>
 </body>
