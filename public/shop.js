@@ -13,6 +13,7 @@ let selectedCategory = 'all';
 let selectedGenders = [];
 let selectedBadges = [];
 let searchQuery = '';
+const FALLBACK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 function applyFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -104,6 +105,7 @@ async function fetchProductsFromSheet() {
 
         const loader = document.getElementById('loader-wrapper');
         if (loader) loader.style.display = 'none';
+        if (typeof window.hideMyLoader === "function") window.hideMyLoader();
 
     } catch (err) {
         console.error("FETCH ERROR:", err);
@@ -151,7 +153,7 @@ function renderProducts() {
     }
 
     [...filtered].reverse().forEach(product => {
-        const displayImg = product.images.length > 0 ? product.images[0] : 'placeholder.jpg';
+        const displayImg = product.images.length > 0 ? product.images[0] : FALLBACK_IMG;
         const productCard = document.createElement('div');
         productCard.className = 'product';
         productCard.innerHTML = `

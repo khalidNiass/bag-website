@@ -18,6 +18,7 @@ const API_BASE =
         : "";
 const API_URL = `${API_BASE}/api/products`;
 let currentProduct = null;
+const FALLBACK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 // =============================================
 // UI & NAVIGATION LOGIC
@@ -88,7 +89,12 @@ function renderDetails() {
     document.getElementById('product-desc').innerText = currentProduct.description || "A masterfully crafted piece from our latest collection.";
 
     // Images & Thumbnails
-    const images = Array.isArray(currentProduct.images) ? currentProduct.images : currentProduct.images.split('|');
+    const imagesRaw = Array.isArray(currentProduct.images)
+        ? currentProduct.images
+        : currentProduct.images
+            ? currentProduct.images.split('|')
+            : [];
+    const images = imagesRaw.length ? imagesRaw : [FALLBACK_IMG];
     const mainImg = document.getElementById('main-product-img');
     mainImg.src = images[0];
 
@@ -113,6 +119,7 @@ function renderDetails() {
     // Hide Loader
     const loader = document.getElementById('loader-wrapper');
     if (loader) loader.style.display = 'none';
+    if (typeof window.hideMyLoader === "function") window.hideMyLoader();
 }
 
 // =============================================

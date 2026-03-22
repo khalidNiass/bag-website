@@ -36,6 +36,7 @@ const API_BASE =
 const API_URL = `${API_BASE}/api/products`;
 const featuredContainer = document.getElementById('featuredProducts');
 let products = [];
+const FALLBACK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 async function fetchProducts() {
     const loaderText = document.getElementById("loader-text");
@@ -90,7 +91,7 @@ function renderFeaturedProducts() {
         if (typeof images === 'string') {
             images = images.split('|');
         }
-        const displayImg = (images && images.length > 0) ? images[0] : 'placeholder.jpg';
+        const displayImg = (images && images.length > 0) ? images[0] : FALLBACK_IMG;
         
         featuredContainer.innerHTML += `
             <div class="product">

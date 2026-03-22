@@ -1,6 +1,10 @@
 // 1. Lock the screen immediately when the script loads
 document.body.style.overflow = "hidden";
 
+function canAutoHideLoader() {
+    return !document.body || document.body.dataset.loader !== "manual";
+}
+
 // 2. This is the "Success" function 
 // Your other file (shop.js) will call this only if the fetch works.
 window.hideMyLoader = function() {
@@ -15,6 +19,8 @@ window.hideMyLoader = function() {
             document.body.style.overflow = "auto"; // Unlock scrolling
             console.log("Internet Fetch Successful: Loader Hidden");
         }, 500);
+    } else {
+        document.body.style.overflow = "auto";
     }
 };
 
@@ -32,3 +38,14 @@ window.showLoaderError = function(message) {
         loaderText.style.animation = "text-fade 1.5s ease-in-out infinite";
     }
 };
+
+// 4. Auto-hide for static pages (unless explicitly manual)
+window.addEventListener("load", function() {
+    if (canAutoHideLoader()) {
+        if (typeof window.hideMyLoader === "function") {
+            window.hideMyLoader();
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }
+});

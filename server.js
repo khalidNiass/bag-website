@@ -1,21 +1,50 @@
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
-// IMPORTANT: Roll your Paystack key in your dashboard since it was exposed!
-const paystack = require("paystack-api")(
-  process.env.PAYSTACK_SECRET_KEY ||
-    "sk_test_0cf4df8911d2980e8cc550b712608436ced24767"
-);
+require("dotenv").config();
 
 const app = express();
+
+const PUBLIC_DIR = path.join(__dirname, "public");
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || "";
+const FRONTEND_URL = process.env.FRONTEND_URL || "";
+const GOOGLE_WEB_APP_URL = process.env.GOOGLE_WEB_APP_URL || "";
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || "";
+const ADMIN_USER = process.env.ADMIN_USER || "";
+const ADMIN_PASS = process.env.ADMIN_PASS || "";
+const ADMIN_PASS_HASH = process.env.ADMIN_PASS_HASH || "";
+const SESSION_SECRET = process.env.SESSION_SECRET || "";
+const MAIL_SERVICE = process.env.MAIL_SERVICE || "gmail";
+const MAIL_USER = process.env.MAIL_USER || "";
+const MAIL_PASS = process.env.MAIL_PASS || "";
+
+const missingEnv = [];
+if (!GOOGLE_WEB_APP_URL) missingEnv.push("GOOGLE_WEB_APP_URL");
+if (!PAYSTACK_SECRET_KEY) missingEnv.push("PAYSTACK_SECRET_KEY");
+if (!SESSION_SECRET) missingEnv.push("SESSION_SECRET");
+if (!MAIL_USER) missingEnv.push("MAIL_USER");
+if (!MAIL_PASS) missingEnv.push("MAIL_PASS");
+if (!ADMIN_USER) missingEnv.push("ADMIN_USER");
+if (!ADMIN_PASS_HASH && !ADMIN_PASS) {
+  missingEnv.push("ADMIN_PASS or ADMIN_PASS_HASH");
+}
+if (missingEnv.length) {
+  console.error("Missing required environment variables:", missingEnv.join(", "));
+  process.exit(1);
+}
+
+const paystack = require("paystack-api")(PAYSTACK_SECRET_KEY);
 
 const allowedOrigins = new Set([
   "http://localhost:5500",
   "http://127.0.0.1:5500",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
+  ...(FRONTEND_URL ? [FRONTEND_URL] : []),
 ]);
 
 const corsOptions = {
@@ -33,20 +62,7 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
-
-const PORT = process.env.PORT || 3000;
-const GOOGLE_WEB_APP_URL =
-  process.env.GOOGLE_WEB_APP_URL ||
-  "https://script.google.com/macros/s/AKfycbwuC0oSKbBxeZCS26QKgOjkYcJUuEio6NK7cl5OW4APB5yLVW73aHb0N9BOQb0lhW-y7Q/exec";
-
-const PAYSTACK_SECRET_KEY =
-  process.env.PAYSTACK_SECRET_KEY ||
-  "sk_test_0cf4df8911d2980e8cc550b712608436ced24767";
-
-const ADMIN_USER = process.env.ADMIN_USER || "admin";
-const ADMIN_PASS = process.env.ADMIN_PASS || "12345";
-const ADMIN_PASS_HASH =
-  process.env.ADMIN_PASS_HASH || bcrypt.hashSync(ADMIN_PASS, 10);
+app.set("trust proxy", 1);
 
 const fetchFn =
   typeof fetch === "function"
@@ -55,23 +71,26 @@ const fetchFn =
         import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const transporter = nodemailer.createTransport({
-  service: process.env.MAIL_SERVICE || "gmail",
+  service: MAIL_SERVICE,
   auth: {
-    user: process.env.MAIL_USER || "hotshionhub@gmail.com",
-    pass: process.env.MAIL_PASS || "wvpk zofo zzuh dmln",
+    user: MAIL_USER,
+    pass: MAIL_PASS,
   },
 });
+
+const EFFECTIVE_ADMIN_HASH =
+  ADMIN_PASS_HASH || bcrypt.hashSync(ADMIN_PASS, 10);
 
 app.use(
   session({
     name: "hotshionhub.sid",
-    secret: process.env.SESSION_SECRET || "hotshionhub_session_secret",
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 8,
     },
   })
@@ -83,19 +102,19 @@ function requireAdmin(req, res, next) {
 }
 
 app.get("/admin.html", requireAdmin, (req, res) => {
-  res.sendFile(__dirname + "/admin.html");
+  res.sendFile(path.join(PUBLIC_DIR, "admin.html"));
 });
 
 app.get("/inventory.html", requireAdmin, (req, res) => {
-  res.sendFile(__dirname + "/inventory.html");
+  res.sendFile(path.join(PUBLIC_DIR, "inventory.html"));
 });
 
 app.get("/orders.html", requireAdmin, (req, res) => {
-  res.sendFile(__dirname + "/orders.html");
+  res.sendFile(path.join(PUBLIC_DIR, "orders.html"));
 });
 
 app.get("/admin-login.html", (req, res) => {
-  res.sendFile(__dirname + "/admin-login.html");
+  res.sendFile(path.join(PUBLIC_DIR, "admin-login.html"));
 });
 
 app.post("/api/login", async (req, res) => {
@@ -105,7 +124,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(400).json({ error: "Missing credentials" });
     }
     const userOk = username === ADMIN_USER;
-    const passOk = await bcrypt.compare(password, ADMIN_PASS_HASH);
+    const passOk = await bcrypt.compare(password, EFFECTIVE_ADMIN_HASH);
     if (!userOk || !passOk) {
       return res.status(401).json({ error: "Invalid login" });
     }
@@ -128,7 +147,7 @@ app.get("/api/me", (req, res) => {
   res.json({ admin: !!(req.session && req.session.admin) });
 });
 
-app.use(express.static(__dirname));
+app.use(express.static(PUBLIC_DIR));
 
 async function callAppsScript(payload) {
   if (!GOOGLE_WEB_APP_URL) {
@@ -281,6 +300,9 @@ app.post("/api/subscribe", async (req, res) => {
 app.post("/api/pay", async (req, res) => {
   try {
     const { email, amount, productName, productImage, name, phone, address } = req.body;
+    const callbackUrl =
+      BASE_URL ||
+      `${req.protocol}://${req.get("host")}/api/verify`;
 
     const response = await paystack.transaction.initialize({
       email,
@@ -292,7 +314,7 @@ app.post("/api/pay", async (req, res) => {
         customer_phone: phone,
         delivery_address: address,
       },
-      callback_url: "http://localhost:3000/api/verify",
+      callback_url: callbackUrl,
     });
     res.json(response.data);
   } catch (err) {
@@ -303,6 +325,9 @@ app.post("/api/pay", async (req, res) => {
 // 2. Verify Payment
 app.get("/api/verify", async (req, res) => {
   const ref = req.query.reference;
+  if (!ref) {
+    return res.status(400).send("Missing payment reference");
+  }
   try {
     const response = await fetchFn(
       `https://api.paystack.co/transaction/verify/${ref}`,
@@ -312,7 +337,7 @@ app.get("/api/verify", async (req, res) => {
     );
     const result = await response.json();
 
-    if (result.data.status === "success") {
+    if (result.data && result.data.status === "success") {
       const meta = result.data.metadata;
       const pAmount = result.data.amount / 100;
       const customerEmail = result.data.customer.email;
@@ -408,8 +433,8 @@ app.get("/api/verify", async (req, res) => {
         </div>
       `;
 
-      const mailFrom = process.env.MAIL_USER || "hotshionhub@gmail.com";
-      const adminTo = process.env.MAIL_TO || "hotshionhub@gmail.com";
+      const mailFrom = MAIL_USER;
+      const adminTo = process.env.MAIL_TO || MAIL_USER;
       const buyerTo = customerEmail;
 
       await transporter.sendMail({
@@ -488,14 +513,17 @@ app.get("/api/verify", async (req, res) => {
         html: buyerHtml,
       });
 
+      const returnHref = FRONTEND_URL ? `${FRONTEND_URL}/index.html` : "/index.html";
       res.send(`
         <div style="text-align:center; padding:50px; font-family:sans-serif;">
             <h1 style="color:green;">Payment Successful!</h1>
             <p>Thank you, ${meta.customer_name}. We have received your payment for ${meta.product_name}.</p>
             <p>Your order will be shipped to: ${meta.delivery_address}</p>
-            <a href="http://127.0.0.1:5500/index.html" style="text-decoration:none; background:black; color:white; padding:10px 20px; border-radius:5px;">Return to Shop</a>
+            <a href="${returnHref}" style="text-decoration:none; background:black; color:white; padding:10px 20px; border-radius:5px;">Return to Shop</a>
         </div>
       `);
+    } else {
+      res.status(400).send("Payment not completed");
     }
   } catch (err) {
     res.status(500).send("Verification Error");
