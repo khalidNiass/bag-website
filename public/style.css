@@ -46,6 +46,115 @@ body {
 }
 
 /* ================================================================
+   POLICY / FOOTER PAGES
+================================================================ */
+.policy-page {
+    padding: 140px 7% 90px;
+}
+
+.policy-hero {
+    background: linear-gradient(130deg, #ffffff 0%, #f8f2e8 100%);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.policy-hero h2 {
+    font-size: 2.1rem;
+    letter-spacing: -0.02em;
+}
+
+.policy-hero p {
+    color: var(--text-muted);
+    max-width: 720px;
+}
+
+.policy-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+}
+
+.policy-meta span {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.policy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.policy-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 16px 40px rgba(22, 22, 22, 0.08);
+}
+
+.policy-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+}
+
+.policy-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.policy-list {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.policy-list li {
+    position: relative;
+    padding-left: 18px;
+}
+
+.policy-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+}
+
+.policy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+.policy-table th,
+.policy-table td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.policy-table th {
+    background: #f5efe4;
+}
+
+/* ================================================================
    THE LOADER (Strict Overlay)
 ================================================================ */
 #loader-wrapper {

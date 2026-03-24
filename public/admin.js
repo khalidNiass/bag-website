@@ -10,6 +10,7 @@ const API_URL = `${API_BASE}/api/products`;
 let allProducts = [];
 let editingProductId = null;
 let editingProduct = null;
+let editingRowIndex = null;
 let uploadedImages = [];
 const BLANK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
@@ -67,6 +68,7 @@ function closeInventoryModal({ reset = false } = {}) {
         if (form) form.reset();
         editingProductId = null;
         editingProduct = null;
+        editingRowIndex = null;
         uploadedImages = [];
         updatePreview();
     }
@@ -164,7 +166,7 @@ function renderProducts() {
             </div>
             <div>
                 <button onclick="editProductByIndex(${index})" class="action-btn" style="background:#121212; color:#c5a059; border:1px solid #c5a059; padding:8px 12px; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                <button onclick="deleteProduct('${p.id}')" class="action-btn" style="background:#f4f4f4; border:1px solid #ddd; padding:8px 12px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                <button onclick="deleteProduct('${p.id}', ${p.rowIndex ?? "null"})" class="action-btn" style="background:#f4f4f4; border:1px solid #ddd; padding:8px 12px; cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>
         </div>
     `).join('');
@@ -211,11 +213,31 @@ async function syncInventory() {
         const rawOrders = data.orders || [];
 
         // 1. Process Products
-        allProducts = rawProducts.map(p => ({
-            ...p,
-            id: String(p.id),
-            images: typeof p.images === 'string' ? p.images.split('|') : (Array.isArray(p.images) ? p.images : [])
-        }));
+        allProducts = rawProducts.map(p => {
+            const derivedId =
+                p.id ??
+                p.ID ??
+                p.Id ??
+                p.productId ??
+                p.productID ??
+                p.ProductID ??
+                p.product_id ??
+                p.ProductId;
+            const derivedRow =
+                p.rowIndex ??
+                p.row ??
+                p.Row ??
+                p._row ??
+                p.index ??
+                p._index ??
+                p.__row;
+            return {
+                ...p,
+                id: derivedId !== undefined && derivedId !== null ? String(derivedId) : "",
+                rowIndex: derivedRow !== undefined && derivedRow !== null ? Number(derivedRow) : null,
+                images: typeof p.images === 'string' ? p.images.split('|') : (Array.isArray(p.images) ? p.images : [])
+            };
+        });
 
         // 2. Render UI Components
         const productContainer = document.getElementById('existingProducts');
@@ -286,13 +308,23 @@ async function deleteOrder(ref) {
     } catch (err) { showNotification("Delete failed", "error"); }
 }
 
-async function deleteProduct(id) {
+async function deleteProduct(id, rowIndex) {
+    const hasId = hasValidId(id);
+    const hasRow = rowIndex !== null && rowIndex !== undefined && !Number.isNaN(Number(rowIndex));
+    if (!hasId && !hasRow) {
+        showNotification("This product is missing an ID and cannot be deleted.", "error");
+        return;
+    }
     if (!confirm("Permanently delete this product from inventory?")) return;
     try {
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "delete", id: id })
+            body: JSON.stringify({
+                action: "delete",
+                id: hasId ? id : undefined,
+                rowIndex: hasRow ? Number(rowIndex) : undefined,
+            })
         });
         if (res.ok) {
             showNotification("Product removed", "success");
@@ -317,8 +349,9 @@ function editProduct(id, productOverride) {
     }
 
     openInventoryModal();
-    editingProductId = p.id || null;
+    editingProductId = p.id !== undefined ? p.id : null;
     editingProduct = p;
+    editingRowIndex = p.rowIndex ?? null;
     document.getElementById('name').value = p.name;
     document.getElementById('price').value = p.price;
     document.getElementById('category').value = p.category;
@@ -337,6 +370,10 @@ function editProduct(id, productOverride) {
     uploadedImages = [];
     updatePreview();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hasValidId(id) {
+    return id !== null && id !== undefined && `${id}` !== "";
 }
 
 // =============================================
@@ -363,18 +400,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             try {
-                if (!editingProductId && editingProduct) {
-                    showNotification("This product is missing an ID. Please add an ID in your sheet before editing.", "error");
+                const hasEditId = hasValidId(editingProductId);
+                const hasRowIndex =
+                    editingRowIndex !== null &&
+                    editingRowIndex !== undefined &&
+                    !Number.isNaN(Number(editingRowIndex));
+                if (!hasEditId && !hasRowIndex && editingProduct) {
+                    showNotification("This product is missing an ID. Please add an ID column in your sheet before editing.", "error");
                     return;
                 }
                 const normalizedId =
-                    editingProductId !== null && editingProductId !== undefined && `${editingProductId}` !== ""
+                    hasEditId
                         ? (Number.isNaN(Number(editingProductId)) ? editingProductId : Number(editingProductId))
                         : undefined;
 
                 const payload = {
-                    action: editingProductId ? "edit" : "add",
+                    action: (hasEditId || hasRowIndex) ? "edit" : "add",
                     id: normalizedId,
+                    rowIndex: hasRowIndex ? Number(editingRowIndex) : undefined,
                     name: document.getElementById("name")?.value?.trim(),
                     price: Number(document.getElementById("price")?.value || 0),
                     category: document.getElementById("category")?.value,
@@ -406,9 +449,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     showNotification(data.error || "Save failed. Check server.", "error");
                     return;
                 }
-                showNotification(editingProductId ? "Product updated" : "Product added", "success");
+                const wasEdit = hasEditId || hasRowIndex;
+                showNotification(wasEdit ? "Product updated" : "Product added", "success");
                 editingProductId = null;
                 editingProduct = null;
+                editingRowIndex = null;
                 uploadedImages = [];
                 form.reset();
                 updatePreview();

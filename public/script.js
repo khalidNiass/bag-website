@@ -149,5 +149,7 @@ if (newsletterForm) {
     });
 }
 
-// Start sequence
-fetchProducts();
+// Start sequence only when featured section exists
+if (featuredContainer) {
+    fetchProducts();
+}
