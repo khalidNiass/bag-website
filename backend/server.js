@@ -4,6 +4,7 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
+const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
@@ -12,7 +13,8 @@ const PUBLIC_DIR = path.join(__dirname, "../public");
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || "";
 const FRONTEND_URL = process.env.FRONTEND_URL || "";
-const GOOGLE_WEB_APP_URL = process.env.GOOGLE_WEB_APP_URL || "";
+const MONGODB_URI = process.env.MONGODB_URI || "";
+const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || "bag-website";
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || "";
 const ADMIN_USER = process.env.ADMIN_USER || "";
 const ADMIN_PASS = process.env.ADMIN_PASS || "";
@@ -23,7 +25,7 @@ const MAIL_USER = process.env.MAIL_USER || "";
 const MAIL_PASS = process.env.MAIL_PASS || "";
 
 const missingEnv = [];
-if (!GOOGLE_WEB_APP_URL) missingEnv.push("GOOGLE_WEB_APP_URL");
+if (!MONGODB_URI) missingEnv.push("MONGODB_URI");
 if (!PAYSTACK_SECRET_KEY) missingEnv.push("PAYSTACK_SECRET_KEY");
 if (!SESSION_SECRET) missingEnv.push("SESSION_SECRET");
 if (!MAIL_USER) missingEnv.push("MAIL_USER");
@@ -38,6 +40,18 @@ if (missingEnv.length) {
 }
 
 const paystack = require("paystack-api")(PAYSTACK_SECRET_KEY);
+const mongoClient = new MongoClient(MONGODB_URI);
+let db;
+let productsCollection;
+let ordersCollection;
+
+async function connectToMongo() {
+  await mongoClient.connect();
+  db = mongoClient.db(MONGODB_DB_NAME);
+  productsCollection = db.collection("products");
+  ordersCollection = db.collection("orders");
+  console.log(`Connected to MongoDB database "${MONGODB_DB_NAME}"`);
+}
 
 const allowedOrigins = new Set([
   "http://localhost:5500",
@@ -68,7 +82,7 @@ const fetchFn =
   typeof fetch === "function"
     ? fetch
     : (...args) =>
-        import("node-fetch").then(({ default: fetch }) => fetch(...args));
+      import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const transporter = nodemailer.createTransport({
   service: MAIL_SERVICE,
@@ -149,145 +163,134 @@ app.get("/api/me", (req, res) => {
 
 app.use(express.static(PUBLIC_DIR));
 
-async function callAppsScript(payload) {
-  if (!GOOGLE_WEB_APP_URL) {
-    throw new Error("GOOGLE_WEB_APP_URL is not set.");
-  }
-  const response = await fetchFn(GOOGLE_WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    redirect: "follow",
-  });
-  return response.json();
-}
-
 // ===============================
 // PRODUCTS API (GET & ADD)
 // ===============================
 
+function normalizeImages(images) {
+  if (Array.isArray(images)) return images.filter(Boolean);
+  if (typeof images === "string") return images.split("|").map((item) => item.trim()).filter(Boolean);
+  return [];
+}
+
+function normalizeColors(colors) {
+  if (Array.isArray(colors)) return colors.filter(Boolean);
+  if (typeof colors === "string") return colors.split(",").map((item) => item.trim()).filter(Boolean);
+  return [];
+}
+
+function buildProductDocument(body) {
+  return {
+    id: body.id ? String(body.id) : new ObjectId().toString(),
+    name: body.name || "",
+    price: Number(body.price) || 0,
+    category: body.category || "",
+    gender: body.gender || "",
+    badge: body.badge || "",
+    colors: normalizeColors(body.colors),
+    images: normalizeImages(body.images),
+    description: body.description || "",
+    rowIndex: body.rowIndex !== undefined && body.rowIndex !== null ? Number(body.rowIndex) : undefined,
+    updatedAt: new Date(),
+  };
+}
+
 // 1. GET ALL DATA - This serves both the Shop (Products) and Admin (Products + Orders)
 app.get("/api/products", async (req, res) => {
   try {
-    const response = await fetchFn(GOOGLE_WEB_APP_URL, { redirect: "follow" });
-    const data = await response.json();
-
-    // We send the FULL data object { products, orders }
-    // The frontend scripts are already smart enough to pick what they need.
-    res.json(data);
+    const products = await productsCollection.find({}).sort({ name: 1 }).toArray();
+    const orders = await ordersCollection.find({}).sort({ createdAt: -1 }).toArray();
+    res.json({ products, orders });
   } catch (err) {
-    console.error("Fetch Error:", err);
+    console.error("Mongo Fetch Error:", err);
     res.status(500).json({ error: "Failed to fetch data" });
   }
 });
 
-// 2. ADD PRODUCT - This was missing! This allows your Admin page to save data.
-// This handles ADD, DELETE, and UPDATE actions from the Admin Panel
+// 2. ADMIN ACTIONS - ADD, EDIT, DELETE PRODUCTS AND ORDERS
 app.post("/api/products", async (req, res) => {
   try {
     console.log("Admin Product Action:", req.body && req.body.action, req.body && req.body.id);
-    const result = await callAppsScript(req.body); // Send the whole body (it contains the action)
-    console.log("Admin Product Result:", result);
-    res.json(result);
+    const action = String(req.body.action || "add").toLowerCase();
+
+    if (action === "add") {
+      const productDoc = buildProductDocument(req.body);
+      productDoc.createdAt = new Date();
+      await productsCollection.insertOne(productDoc);
+      return res.json({ ok: true, product: productDoc });
+    }
+
+    const filter = req.body.id
+      ? { id: String(req.body.id) }
+      : req.body.rowIndex !== undefined && req.body.rowIndex !== null
+        ? { rowIndex: Number(req.body.rowIndex) }
+        : null;
+
+    if (action === "edit") {
+      if (!filter) {
+        return res.status(400).json({ error: "Missing product id or rowIndex" });
+      }
+      const productDoc = buildProductDocument(req.body);
+      const result = await productsCollection.updateOne(filter, { $set: productDoc });
+      if (!result.matchedCount) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      return res.json({ ok: true, product: productDoc });
+    }
+
+    if (action === "delete") {
+      if (!filter) {
+        return res.status(400).json({ error: "Missing product id or rowIndex" });
+      }
+      const result = await productsCollection.deleteOne(filter);
+      if (!result.deletedCount) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      return res.json({ ok: true });
+    }
+
+    if (action === "update_order_status") {
+      const result = await ordersCollection.updateOne(
+        { ref: String(req.body.ref) },
+        { $set: { status: req.body.status || "pending", updatedAt: new Date() } }
+      );
+      if (!result.matchedCount) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      return res.json({ ok: true });
+    }
+
+    if (action === "delete_order") {
+      const result = await ordersCollection.deleteOne({ ref: String(req.body.ref) });
+      if (!result.deletedCount) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      return res.json({ ok: true });
+    }
+
+    return res.status(400).json({ error: "Unknown action" });
   } catch (err) {
     console.error("Admin POST Error:", err);
     res.status(500).json({ error: "Operation failed" });
   }
 });
 
-// ===============================
-// OPTIONAL: EXPLICIT SHEETS ROUTES
-// ===============================
-
-app.get("/api/sheets/all", async (req, res) => {
-  try {
-    const response = await fetchFn(GOOGLE_WEB_APP_URL, { redirect: "follow" });
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch data" });
-  }
-});
-
-app.post("/api/sheets/orders", async (req, res) => {
-  try {
-    const result = await callAppsScript({
-      action: "record_order",
-      ...req.body,
-    });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-app.patch("/api/sheets/orders/status", async (req, res) => {
-  try {
-    const result = await callAppsScript({
-      action: "update_order_status",
-      ref: req.body.ref,
-      status: req.body.status,
-    });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-app.delete("/api/sheets/orders/:ref", async (req, res) => {
-  try {
-    const result = await callAppsScript({
-      action: "delete_order",
-      ref: req.params.ref,
-    });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-app.post("/api/sheets/products", async (req, res) => {
-  try {
-    const result = await callAppsScript({ action: "add", ...req.body });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-app.put("/api/sheets/products/:id", async (req, res) => {
-  try {
-    const result = await callAppsScript({
-      action: "edit",
-      id: req.params.id,
-      ...req.body,
-    });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-app.delete("/api/sheets/products/:id", async (req, res) => {
-  try {
-    const result = await callAppsScript({
-      action: "delete",
-      id: req.params.id,
-    });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Operation failed" });
-  }
-});
-
-// ===============================
 // NEWSLETTER (MATCH FRONTEND CALL)
 // ===============================
 app.post("/api/subscribe", async (req, res) => {
   try {
-    const result = await callAppsScript({ action: "subscribe", ...req.body });
-    res.json(result);
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ error: "Missing email" });
+    }
+    const result = await db.collection("subscribers").updateOne(
+      { email: String(email).toLowerCase().trim() },
+      { $set: { email: String(email).toLowerCase().trim(), createdAt: new Date() } },
+      { upsert: true }
+    );
+    res.json({ ok: true });
   } catch (err) {
+    console.error("Subscribe Error:", err);
     res.status(500).json({ error: "Subscription failed" });
   }
 });
@@ -342,22 +345,28 @@ app.get("/api/verify", async (req, res) => {
       const pAmount = result.data.amount / 100;
       const customerEmail = result.data.customer.email;
 
-      // Log to Google Sheets
-      await fetchFn(GOOGLE_WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "record_order",
-          email: customerEmail,
-          name: meta.customer_name,
-          phone: meta.customer_phone,
-          address: meta.delivery_address,
-          amount: pAmount,
-          product: meta.product_name,
-          ref: ref,
-        }),
-        redirect: "follow",
-      });
+      const orderDoc = {
+        ref,
+        email: customerEmail,
+        name: meta.customer_name,
+        phone: meta.customer_phone,
+        address: meta.delivery_address,
+        amount: pAmount,
+        product: meta.product_name,
+        status: "pending",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      try {
+        await ordersCollection.updateOne(
+          { ref: orderDoc.ref },
+          { $setOnInsert: orderDoc, $set: { updatedAt: new Date() } },
+          { upsert: true }
+        );
+      } catch (mongoErr) {
+        console.error("Mongo order save failed:", mongoErr);
+      }
 
       const orderDate = new Date().toLocaleString();
       const subject = `New Order Received • ${meta.product_name}`;
@@ -384,11 +393,10 @@ app.get("/api/verify", async (req, res) => {
               <div style="margin-bottom:16px;">
                 <div style="font-size:12px; color:#6b7280; text-transform:uppercase; letter-spacing:.5px;">Order Summary</div>
                 <div style="font-size:18px; font-weight:700; color:#111827; margin-top:6px;">${meta.product_name}</div>
-                ${
-                  productImage
-                    ? `<img src="${productImage}" alt="Product" style="margin-top:10px; width:100%; max-width:220px; border-radius:8px; border:1px solid #e5e7eb;" />`
-                    : ""
-                }
+                ${productImage
+          ? `<img src="${productImage}" alt="Product" style="margin-top:10px; width:100%; max-width:220px; border-radius:8px; border:1px solid #e5e7eb;" />`
+          : ""
+        }
               </div>
 
               <table style="width:100%; border-collapse:collapse; font-size:14px;">
@@ -487,13 +495,12 @@ app.get("/api/verify", async (req, res) => {
                   <td style="padding:8px 0; text-align:right; color:#111827;">${meta.delivery_address}</td>
                 </tr>
               </table>
-              ${
-                productImage
-                  ? `<div style="margin-top:14px;">
+              ${productImage
+          ? `<div style="margin-top:14px;">
                       <img src="${productImage}" alt="Product" style="width:100%; max-width:260px; border-radius:8px; border:1px solid #e5e7eb;" />
                     </div>`
-                  : ""
-              }
+          : ""
+        }
               <div style="margin-top:20px; padding:14px 16px; background:#f3f4f6; border-radius:8px; color:#374151; font-size:13px;">
                 If you have questions, reply to this email.
               </div>
@@ -530,4 +537,14 @@ app.get("/api/verify", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
+async function startServer() {
+  try {
+    await connectToMongo();
+    app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+}
+
+startServer();

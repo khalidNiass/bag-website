@@ -25,6 +25,7 @@
     "dotenv": "^16.6.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "mongodb": "^5.9.2",
     "nodemailer": "^8.0.2",
     "paystack-api": "^2.0.6"
   }
