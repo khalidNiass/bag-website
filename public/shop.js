@@ -3,10 +3,10 @@
 // =========================
 const API_BASE =
     (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-    location.port === "5500"
+        location.port === "5500"
         ? "http://localhost:3000"
         : "https://bag-website-six.vercel.app";
-const API_URL = `${API_BASE}/api/products`; 
+const API_URL = `${API_BASE}/api/products`;
 let products = [];
 let container; // Declared once here
 let selectedCategory = 'all';
@@ -46,7 +46,7 @@ function applyFiltersFromUrl() {
 // =========================
 // 2. UI NAVIGATION (Scroll & Sidebar)
 // =========================
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const header = document.querySelector('header');
     if (window.scrollY > 50) {
         header.classList.add('scrolled');
@@ -74,7 +74,7 @@ function closeSidebar() {
 // =========================
 async function fetchProductsFromSheet() {
     container = document.getElementById('shopGrid'); // Assigned once here
-    
+
     try {
         const loaderText = document.getElementById("loader-text");
         if (loaderText) loaderText.innerText = "Connecting to shop...";
@@ -122,7 +122,7 @@ function waitForImages() {
         return new Promise((resolve) => {
             if (img.complete) resolve();
             img.onload = resolve;
-            img.onerror = resolve; 
+            img.onerror = resolve;
         });
     });
     return Promise.all(promises);

@@ -3,7 +3,7 @@
 // =============================================
 const API_BASE =
     (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-    location.port === "5500"
+        location.port === "5500"
         ? `http://${location.hostname}:3000`
         : "https://bag-website-six.vercel.app";
 const API_URL = `${API_BASE}/api/products`;
@@ -156,7 +156,7 @@ function handleImageUpload(input) {
 function renderProducts() {
     const container = document.getElementById('existingProducts');
     if (!container) return;
-    
+
     container.innerHTML = allProducts.map((p, index) => `
         <div class="product-admin" style="display:flex; align-items:center; gap:20px; background:white; padding:15px; margin-bottom:10px; border:1px solid #eee; border-radius:8px;">
             <img src="${(p.images && p.images[0]) ? p.images[0] : BLANK_IMG}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
@@ -184,7 +184,7 @@ function renderOrders(orders) {
     container.innerHTML = orders.map(order => `
         <tr>
             <td>${order.date || 'N/A'}</td>
-            <td>#${order.ref ? order.ref.substring(0,8) : 'N/A'}</td>
+            <td>#${order.ref ? order.ref.substring(0, 8) : 'N/A'}</td>
             <td>${order.name}</td>
             <td>${order.product}</td>
             <td>₦${Number(order.amount).toLocaleString()}</td>
@@ -255,7 +255,7 @@ async function syncInventory() {
             console.warn("Missing HTML element: #admin-orders-list");
         }
 
-        updateStats(rawOrders);   
+        updateStats(rawOrders);
     } catch (err) {
         console.error("Admin Sync Error:", err);
         showNotification("Failed to sync data. Is the server running?", "error");
@@ -286,9 +286,9 @@ async function updateOrderStatus(ref, newStatus) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "update_order_status", ref, status: newStatus })
         });
-        if (res.ok) { 
-            showNotification(`Order marked as ${newStatus}`, "success"); 
-            syncInventory(); 
+        if (res.ok) {
+            showNotification(`Order marked as ${newStatus}`, "success");
+            syncInventory();
         }
     } catch (err) { showNotification("Update failed", "error"); }
 }
@@ -342,7 +342,7 @@ function editProductByIndex(index) {
 function editProduct(id, productOverride) {
     const p = productOverride || allProducts.find(item => item.id === id);
     if (!p) return;
-    
+
     if (!document.getElementById('productForm')) {
         window.location.href = `admin.html?edit=${id}`;
         return;
@@ -468,7 +468,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await syncInventory();
-    
+
     const loader = document.getElementById('loader-wrapper');
     if (loader) setTimeout(() => { loader.style.display = 'none'; }, 500);
 });

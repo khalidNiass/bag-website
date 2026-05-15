@@ -1,4 +1,4 @@
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const header = document.querySelector('header');
     if (window.scrollY > 50) {
         header.classList.add('scrolled');
@@ -17,7 +17,7 @@ function toggleSidebar() {
     if (sidebar) sidebar.classList.add("active");
     // We keep the menu button visible but styled in CSS usually, 
     // but following your logic:
-    if (menuBtn) menuBtn.style.opacity = "0"; 
+    if (menuBtn) menuBtn.style.opacity = "0";
 }
 
 function closeSidebar() {
@@ -30,7 +30,7 @@ function closeSidebar() {
 // =========================
 const API_BASE =
     (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-    location.port === "5500"
+        location.port === "5500"
         ? "http://localhost:3000"
         : "https://bag-website-six.vercel.app";
 const API_URL = `${API_BASE}/api/products`;
@@ -40,7 +40,7 @@ const FALLBACK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQA
 
 async function fetchProducts() {
     const loaderText = document.getElementById("loader-text");
-    
+
     try {
         if (loaderText) loaderText.innerText = "Accessing Vault...";
 
@@ -58,7 +58,7 @@ async function fetchProducts() {
         } else {
             products = [];
         }
-        
+
         renderFeaturedProducts();
         await waitForImages();
 
@@ -72,12 +72,12 @@ async function fetchProducts() {
         if (loaderText) loaderText.innerText = "Connection Lost. Retrying...";
         setTimeout(fetchProducts, 5000);
     }
-} 
+}
 // =========================
 function renderFeaturedProducts() {
     if (!featuredContainer) return;
     featuredContainer.innerHTML = '';
-    
+
     // Pick 4 featured products
     const featured = [...products].sort(() => 0.5 - Math.random()).slice(0, 4);
 
@@ -86,13 +86,13 @@ function renderFeaturedProducts() {
         const formattedPrice = product.price ? Number(product.price).toLocaleString() : "0";
 
         const badgeHTML = product.badge ? `<span class="badge">${product.badge}</span>` : '';
-        
+
         let images = product.images;
         if (typeof images === 'string') {
             images = images.split('|');
         }
         const displayImg = (images && images.length > 0) ? images[0] : FALLBACK_IMG;
-        
+
         featuredContainer.innerHTML += `
             <div class="product">
                 ${badgeHTML}
@@ -116,7 +116,7 @@ function waitForImages() {
         return new Promise((resolve) => {
             if (img.complete) resolve();
             img.onload = resolve;
-            img.onerror = resolve; 
+            img.onerror = resolve;
         });
     });
     return Promise.all(promises);
@@ -127,11 +127,11 @@ function waitForImages() {
 // =========================
 const newsletterForm = document.getElementById('newsletterForm');
 if (newsletterForm) {
-    newsletterForm.addEventListener('submit', async function(e) {
+    newsletterForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         const email = this.querySelector('input').value.trim();
         const btn = this.querySelector('button');
-        
+
         btn.innerText = "...";
         try {
             await fetch(`${API_BASE}/api/subscribe`, {
