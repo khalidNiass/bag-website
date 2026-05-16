@@ -11,11 +11,7 @@ window.addEventListener('scroll', function() {
 // =============================================
 // CONFIGURATION
 // =============================================
-const API_BASE =
-    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-    location.port === "5500"
-        ? "http://localhost:3000"
-        : "";
+const API_BASE = window.HOTSHION_API_BASE || "";
 const API_URL = `${API_BASE}/api/products`;
 let currentProduct = null;
 const FALLBACK_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";

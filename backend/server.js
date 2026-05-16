@@ -15,6 +15,8 @@ const BASE_URL = process.env.BASE_URL || "";
 const FRONTEND_URL = process.env.FRONTEND_URL || "";
 const MONGODB_URI = process.env.MONGODB_URI || "";
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || "bag-website";
+const MONGODB_DIRECT_HOSTS = process.env.MONGODB_DIRECT_HOSTS || "";
+const MONGODB_REPLICA_SET = process.env.MONGODB_REPLICA_SET || "";
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || "";
 const ADMIN_USER = process.env.ADMIN_USER || "";
 const ADMIN_PASS = process.env.ADMIN_PASS || "";
@@ -40,7 +42,29 @@ if (missingEnv.length) {
 }
 
 const paystack = require("paystack-api")(PAYSTACK_SECRET_KEY);
-const mongoClient = new MongoClient(MONGODB_URI);
+
+function buildMongoUri() {
+  if (!MONGODB_DIRECT_HOSTS || !MONGODB_URI.startsWith("mongodb+srv://")) {
+    return MONGODB_URI;
+  }
+
+  const srvUrl = new URL(MONGODB_URI);
+  const params = new URLSearchParams(srvUrl.search);
+  params.set("tls", "true");
+  params.set("authSource", params.get("authSource") || "admin");
+  if (MONGODB_REPLICA_SET) {
+    params.set("replicaSet", MONGODB_REPLICA_SET);
+  }
+
+  const credentials = srvUrl.username
+    ? `${srvUrl.username}${srvUrl.password ? `:${srvUrl.password}` : ""}@`
+    : "";
+  const dbPath = srvUrl.pathname && srvUrl.pathname !== "/" ? srvUrl.pathname : `/${MONGODB_DB_NAME}`;
+
+  return `mongodb://${credentials}${MONGODB_DIRECT_HOSTS}${dbPath}?${params.toString()}`;
+}
+
+const mongoClient = new MongoClient(buildMongoUri());
 let db;
 let productsCollection;
 let ordersCollection;
@@ -53,17 +77,28 @@ async function connectToMongo() {
   console.log(`Connected to MongoDB database "${MONGODB_DB_NAME}"`);
 }
 
+function normalizeOrigin(origin) {
+  if (!origin) return "";
+  return /^https?:\/\//i.test(origin) ? origin : `https://${origin}`;
+}
+
 const allowedOrigins = new Set([
-  "http://localhost:5500",
-  "http://127.0.0.1:5500",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-  ...(FRONTEND_URL ? [FRONTEND_URL] : []),
+  ...(FRONTEND_URL ? [normalizeOrigin(FRONTEND_URL)] : []),
 ]);
 
 const corsOptions = {
   origin: (origin, cb) => {
     if (!origin) return cb(null, true); // non-browser or same-origin
+    try {
+      const url = new URL(origin);
+      if (url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+        return cb(null, true);
+      }
+    } catch {
+      // Fall through to the explicit origin check below.
+    }
     if (allowedOrigins.has(origin)) return cb(null, true);
     return cb(new Error("Not allowed by CORS"));
   },
@@ -103,7 +138,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" && FRONTEND_URL ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 8,
     },
@@ -159,6 +194,10 @@ app.post("/api/logout", (req, res) => {
 
 app.get("/api/me", (req, res) => {
   res.json({ admin: !!(req.session && req.session.admin) });
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true });
 });
 
 app.use(express.static(PUBLIC_DIR));
@@ -303,9 +342,10 @@ app.post("/api/subscribe", async (req, res) => {
 app.post("/api/pay", async (req, res) => {
   try {
     const { email, amount, productName, productImage, name, phone, address } = req.body;
-    const callbackUrl =
-      BASE_URL ||
-      `${req.protocol}://${req.get("host")}/api/verify`;
+    const baseUrl = BASE_URL.replace(/\/$/, "");
+    const callbackUrl = baseUrl
+      ? `${baseUrl}${baseUrl.endsWith("/api/verify") ? "" : "/api/verify"}`
+      : `${req.protocol}://${req.get("host")}/api/verify`;
 
     const response = await paystack.transaction.initialize({
       email,
@@ -540,7 +580,7 @@ app.get("/api/verify", async (req, res) => {
 async function startServer() {
   try {
     await connectToMongo();
-    app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
+    app.listen(PORT, "0.0.0.0", () => console.log(`Backend running on port ${PORT}`));
   } catch (err) {
     console.error("Failed to start server:", err);
     process.exit(1);

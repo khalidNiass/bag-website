@@ -28,11 +28,7 @@ function closeSidebar() {
 // =========================
 // FETCH & RENDER FEATURED
 // =========================
-const API_BASE =
-    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-        location.port === "5500"
-        ? "http://localhost:3000"
-        : "https://bag-website-six.vercel.app";
+const API_BASE = window.HOTSHION_API_BASE || "";
 const API_URL = `${API_BASE}/api/products`;
 const featuredContainer = document.getElementById('featuredProducts');
 let products = [];

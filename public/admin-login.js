@@ -4,11 +4,7 @@ function login() {
   const errorEl = document.getElementById("error");
   if (errorEl) errorEl.innerText = "";
 
-  const API_BASE =
-    (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
-    location.port === "5500"
-      ? `http://${location.hostname}:3000`
-      : "";
+  const API_BASE = window.HOTSHION_API_BASE || "";
 
   fetch(`${API_BASE}/api/login`, {
     method: "POST",
