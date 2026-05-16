@@ -5,6 +5,7 @@
   "main": "admin-login.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:products": "node scripts/seed-products.js",
     "start": "node backend/server.js"
   },
   "repository": {
