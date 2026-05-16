@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: BASE_URL
-        value: https://bag-website-api.onrender.com
+        value: https://bag-website-sfzx.onrender.com
       - key: FRONTEND_URL
         value: https://hotshionhub.vercel.app
       - key: MONGODB_URI
