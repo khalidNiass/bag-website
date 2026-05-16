@@ -17,10 +17,6 @@ services:
         sync: false
       - key: MONGODB_DB_NAME
         value: bag-website
-      - key: MONGODB_DIRECT_HOSTS
-        sync: false
-      - key: MONGODB_REPLICA_SET
-        sync: false
       - key: PAYSTACK_SECRET_KEY
         sync: false
       - key: ADMIN_USER
